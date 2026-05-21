@@ -56,16 +56,16 @@ export default function HomePage() {
             </div>
             <div className="hero-meta">
               <span>
-                <b>~127k</b> queries answered last 30 days
+                <b>42</b> GPU presets
               </span>
               <span>
-                <b>1,420</b> models indexed
+                <b>30</b> curated models
               </span>
               <span>
-                <b>12</b> GPU presets
+                <b>5</b> hosting runtimes
               </span>
               <span>
-                <b>0</b> tracking pixels
+                <b>MIT</b> open source, no ads
               </span>
             </div>
           </div>
