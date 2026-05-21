@@ -4,10 +4,13 @@ import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import Calculator from '@/components/Calculator';
+import FitRowMath from '@/components/FitRowMath';
+import GiscusComments from '@/components/GiscusComments';
 import { GPUS, gpuBySlug, nearbyGpusByVram, type GPU } from '@/lib/gpus';
 import { MODELS } from '@/lib/models';
 import { bestQuantForBudget } from '@/lib/quants';
 import { weightsBudget, modelSizeGB, classifyFit, fmtGB, type FitClass } from '@/lib/vram';
+import { explainFit } from '@/lib/fit-math';
 
 type Params = { slug: string };
 
@@ -178,30 +181,45 @@ export default async function GpuDetailPage({
               <span style={{ textAlign: 'right' }}>Fit</span>
             </div>
             {top12.map((row) => (
-              <Link
+              <div
                 key={row.model.slug}
-                href={`/model/${row.model.slug}`}
-                className="fit-row"
-                style={{ color: 'inherit', textDecoration: 'none' }}
+                style={{ borderBottom: '1px solid var(--line)' }}
               >
-                <span className="name">{row.model.name}</span>
-                <span className="params">{`${row.model.params}B`}</span>
-                <span className="quant">{row.best.label.toUpperCase()}</span>
-                <span className="bar-cell">
-                  <span className="mini-bar">
-                    <div
-                      style={{
-                        width: `${row.pctOfBudget}%`,
-                        background: barColor(row.fit),
-                      }}
-                    />
+                <Link
+                  href={`/model/${row.model.slug}`}
+                  className="fit-row"
+                  style={{
+                    color: 'inherit',
+                    textDecoration: 'none',
+                    borderBottom: 'none',
+                  }}
+                >
+                  <span className="name">{row.model.name}</span>
+                  <span className="params">{`${row.model.params}B`}</span>
+                  <span className="quant">{row.best.label.toUpperCase()}</span>
+                  <span className="bar-cell">
+                    <span className="mini-bar">
+                      <div
+                        style={{
+                          width: `${row.pctOfBudget}%`,
+                          background: barColor(row.fit),
+                        }}
+                      />
+                    </span>
+                    <span className="mini-pct">{fmtGB(row.weight)}</span>
                   </span>
-                  <span className="mini-pct">{fmtGB(row.weight)}</span>
-                </span>
-                <span className="badge-cell">
-                  <span className={`pill ${row.fit}`}>{row.fit}</span>
-                </span>
-              </Link>
+                  <span className="badge-cell">
+                    <span className={`pill ${row.fit}`}>{row.fit}</span>
+                  </span>
+                </Link>
+                <FitRowMath
+                  math={explainFit({
+                    gpu,
+                    model: row.model,
+                    quant: row.best,
+                  })}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -232,6 +250,8 @@ export default async function GpuDetailPage({
           </div>
         </div>
       </section>
+
+      <GiscusComments category="Q&A" />
 
       <Footer route={`/gpu/${gpu.slug}`} />
     </>

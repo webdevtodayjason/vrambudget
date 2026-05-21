@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import GiscusComments from '@/components/GiscusComments';
 import { RUNTIMES, runtimeBySlug, otherRuntimes } from '@/lib/runtimes';
 
 type Params = { slug: string };
@@ -444,6 +445,8 @@ export default async function RuntimeDetailPage({
           </div>
         </div>
       </section>
+
+      <GiscusComments category="Q&A" />
 
       <Footer route={`/runtime/${slug}`} />
     </>

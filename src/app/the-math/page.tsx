@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import GiscusComments from '@/components/GiscusComments';
 
 export const metadata: Metadata = {
   title: 'The math, plainly',
@@ -240,6 +241,8 @@ export default function TheMathPage() {
           </Link>
         </p>
       </article>
+
+      <GiscusComments category="General" />
 
       <Footer route="/the-math" />
     </>

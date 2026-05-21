@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import GiscusComments from '@/components/GiscusComments';
 import {
   MODELS,
   modelBySlug,
@@ -245,6 +246,8 @@ export default async function ModelDetailPage({
           </div>
         </div>
       </section>
+
+      <GiscusComments category="Q&A" />
 
       <Footer route={`/model/${m.slug}`} />
     </>

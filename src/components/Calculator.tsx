@@ -172,6 +172,19 @@ export default function Calculator({
     }
   }
 
+  // X share: open intent URL with a prefilled tweet.
+  function buildTweetUrl(): string {
+    if (typeof window === "undefined") return "https://twitter.com/intent/tweet";
+    const ctxK = context >= 1024 ? `${Math.round(context / 1024)}K` : `${context}`;
+    const text = `${gpu.name} budget at ${ctxK} ctx: ${budget.weightsBudget.toFixed(1)}GB for weights. VRAM ≈ params × (bits ÷ 8). Find your fit:`;
+    const params = new URLSearchParams({
+      text,
+      url: window.location.href,
+      via: "argentAIOS",
+    });
+    return `https://twitter.com/intent/tweet?${params.toString()}`;
+  }
+
   const budget: Budget = useMemo(
     () =>
       weightsBudget({
@@ -212,6 +225,31 @@ export default function Calculator({
           >
             {copied ? "✓ copied" : "↗ copy link"}
           </button>
+          <a
+            href={typeof window !== "undefined" ? buildTweetUrl() : "https://twitter.com/intent/tweet"}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Share this calculator state on X"
+            onClick={(e) => {
+              // Recompute the tweet URL at click time so the URL reflects
+              // any state changes that happened since the last render.
+              (e.currentTarget as HTMLAnchorElement).href = buildTweetUrl();
+            }}
+            style={{
+              background: "transparent",
+              border: "1px solid var(--line-strong)",
+              color: "var(--text)",
+              fontFamily: "var(--mono)",
+              fontSize: 11,
+              padding: "5px 10px",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              textDecoration: "none",
+              transition: "color 80ms linear, border-color 80ms linear",
+            }}
+          >
+            ↗ tweet
+          </a>
           <span className="dot-row">
             <span className="dot live" />
             <span>live</span>

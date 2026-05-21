@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import Calculator from '@/components/Calculator';
+import GiscusComments from '@/components/GiscusComments';
 
 export const metadata: Metadata = {
   title: 'Calculator',
@@ -79,6 +80,8 @@ export default function CalcPage() {
           <Calculator />
         </div>
       </section>
+
+      <GiscusComments category="Q&A" />
 
       <Footer route="/calc" />
     </>
