@@ -1373,14 +1373,12 @@ a, button {
 .mobile-menu-toggle[aria-expanded="true"] .mobile-menu-bar { background: var(--accent); }
 
 .mobile-menu-drawer {
-  /* Use absolute positioning relative to the nav element. The nav has
-     backdrop-filter which creates a containing block, so position:fixed
-     would collapse height. Absolute + explicit height works either way.
-     dvh handles iOS Safari's collapsing/expanding address bar — 100vh
-     there includes the address-bar area, which causes content to be
-     hidden behind the chrome. */
-  position: absolute;
-  top: 100%;
+  /* The drawer is React-portaled to document.body, escaping the
+     <nav>'s backdrop-filter containing block. That lets us use
+     position: fixed against the real viewport — so the drawer always
+     appears below the sticky nav regardless of scroll position. */
+  position: fixed;
+  top: 56px;
   left: 0;
   right: 0;
   height: calc(100vh - 56px);
@@ -1392,6 +1390,14 @@ a, button {
   border-top: 1px solid var(--line);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 480px) {
+  .mobile-menu-drawer {
+    top: 52px;
+    height: calc(100vh - 52px);
+    height: calc(100dvh - 52px);
+  }
 }
 .mobile-menu-drawer a {
   display: block;
