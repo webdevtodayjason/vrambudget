@@ -5,6 +5,7 @@ import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import GiscusComments from '@/components/GiscusComments';
 import BrandLogo from '@/components/BrandLogo';
+import RuntimeBadges from '@/components/RuntimeBadges';
 import {
   MODELS,
   modelBySlug,
@@ -188,6 +189,22 @@ export default async function ModelDetailPage({
                 <span className="unit">GB</span>
               </div>
             </div>
+          </div>
+
+          <div style={{ marginTop: 28 }}>
+            <div
+              style={{
+                fontFamily: 'var(--mono)',
+                fontSize: 11,
+                color: 'var(--text-faint)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                marginBottom: 10,
+              }}
+            >
+              {'// '}where you can run it
+            </div>
+            <RuntimeBadges runtimes={m.runtimes} />
           </div>
         </div>
       </section>

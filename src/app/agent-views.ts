@@ -9,6 +9,7 @@
 import { registerHomeView } from './_views/home';
 import { registerMathView } from './_views/math';
 import { registerCalcView } from './_views/calc';
+import { registerGlossaryView } from './_views/glossary';
 import { registerGpuIndexView } from './_views/gpu-index';
 import { registerModelIndexView } from './_views/model-index';
 import { registerRuntimeIndexView } from './_views/runtime-index';
@@ -19,6 +20,7 @@ import { registerAllRuntimeViews } from './_views/all-runtimes';
 registerHomeView();
 registerMathView();
 registerCalcView();
+registerGlossaryView();
 registerGpuIndexView();
 registerModelIndexView();
 registerRuntimeIndexView();
