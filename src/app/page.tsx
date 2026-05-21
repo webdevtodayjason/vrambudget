@@ -64,8 +64,8 @@ export default function HomePage() {
               <span>
                 <b>5</b> hosting runtimes
               </span>
-              <span>
-                <b>MIT</b> open source, no ads
+              <span style={{ color: 'var(--accent)' }}>
+                <b>NEW</b> share to help spread the word
               </span>
             </div>
           </div>
