@@ -6,11 +6,18 @@
 
 <div align="center">
 
+  ![License](https://img.shields.io/github/license/webdevtodayjason/vrambudget?color=FFA947&style=flat-square)
+  ![Stars](https://img.shields.io/github/stars/webdevtodayjason/vrambudget?color=FFA947&style=flat-square)
+  ![Last commit](https://img.shields.io/github/last-commit/webdevtodayjason/vrambudget?color=FFA947&style=flat-square)
+  ![Discussions](https://img.shields.io/github/discussions/webdevtodayjason/vrambudget?color=FFA947&style=flat-square)
+  ![Issues](https://img.shields.io/github/issues/webdevtodayjason/vrambudget?color=FFA947&style=flat-square)
+  ![AVL L3](https://img.shields.io/badge/AVL-L3%20conformant-FFA947?style=flat-square)
+
   **What LLM fits my hardware?**
 
   The math behind local LLM memory budgets. Plug in a GPU and a context length; see what's actually left for weights after the KV cache, runtime overhead, and a safety margin.
 
-  [Live site](https://vrambudget.com) · [Run the calculator](https://vrambudget.com/#calculator) · [Read the math](https://vrambudget.com/the-math)
+  [Live site](https://vrambudget.com) · [Run the calculator](https://vrambudget.com/calc) · [Read the math](https://vrambudget.com/the-math) · [Join the discussion](https://github.com/webdevtodayjason/vrambudget/discussions)
 
 </div>
 

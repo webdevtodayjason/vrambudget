@@ -109,18 +109,64 @@ export default function CalcPage() {
             you can DM a friend a thread of {'“'}what fits on a 4090 at 32K context
             {'”'} and they land on the answer.
           </p>
-          <p
+
+          <div
             style={{
-              marginTop: 24,
-              fontFamily: 'var(--mono)',
-              fontSize: 13,
-              color: 'var(--text-faint)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
+              marginTop: 28,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12,
+              maxWidth: 720,
             }}
           >
-            ?gpu=4090 · ?ctx=32k · ?conc=4 · ?safety=10 · ?tab=size
-          </p>
+            <span
+              style={{
+                fontFamily: 'var(--mono)',
+                fontSize: 11,
+                color: 'var(--text-faint)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+              }}
+            >
+              {'// '}try a preset
+            </span>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 8,
+              }}
+            >
+              {[
+                { label: 'RTX 4090 @ 32K', href: '/calc/?gpu=4090&ctx=32k&conc=4' },
+                { label: 'RTX 3090 @ 8K', href: '/calc/?gpu=3090&ctx=8k&conc=1' },
+                { label: 'M3 Ultra @ 128K', href: '/calc/?gpu=m3-ultra&ctx=128k&conc=1' },
+                { label: 'M5 Max 128 @ 128K', href: '/calc/?gpu=m5-max&ctx=128k&conc=8' },
+                { label: 'H100 @ 128K · conc 16', href: '/calc/?gpu=h100&ctx=128k&conc=16&safety=10' },
+                { label: '2× H100 NVL @ 64K', href: '/calc/?gpu=h100-nvl-2x&ctx=64k&conc=8' },
+                { label: 'By-size matrix', href: '/calc/?tab=size' },
+              ].map((preset) => (
+                <Link
+                  key={preset.href}
+                  href={preset.href}
+                  style={{
+                    display: 'inline-block',
+                    padding: '6px 12px',
+                    border: '1px solid var(--line-strong)',
+                    fontFamily: 'var(--mono)',
+                    fontSize: 11,
+                    color: 'var(--text)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    textDecoration: 'none',
+                    transition: 'color 80ms linear, border-color 80ms linear',
+                  }}
+                >
+                  ↗ {preset.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

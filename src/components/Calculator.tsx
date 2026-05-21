@@ -89,7 +89,27 @@ export default function Calculator({
   const [category, setCategory] = useState<GpuCategory>(initialGpuObj.category);
   const [hydrated, setHydrated] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
+  const [showShareTip, setShowShareTip] = useState<boolean>(false);
   const vramTouchedRef = useRef<boolean>(false);
+  const shareTipShownRef = useRef<boolean>(false);
+
+  // Trigger a one-time share tooltip the first time a user moves any slider.
+  // Stored in localStorage so it never re-fires after dismissal/timeout.
+  function maybeShowShareTip() {
+    if (shareTipShownRef.current) return;
+    if (typeof window === "undefined") return;
+    if (window.localStorage.getItem("vrb_share_tip_seen") === "1") return;
+    shareTipShownRef.current = true;
+    setShowShareTip(true);
+    window.setTimeout(() => {
+      setShowShareTip(false);
+      try {
+        window.localStorage.setItem("vrb_share_tip_seen", "1");
+      } catch {
+        // Privacy-mode browsers reject localStorage writes; not critical.
+      }
+    }, 5500);
+  }
 
   // Hydrate from URL on first client render. Static export means searchParams
   // isn't available SSR, so we read `window.location.search` directly post-mount.
@@ -152,11 +172,28 @@ export default function Calculator({
   // Wrapped slider setters that mark VRAM as user-touched.
   const setVramTouched = (v: number) => {
     vramTouchedRef.current = true;
+    maybeShowShareTip();
     setVram(v);
   };
   const setGpuAndResetVram = (next: GPU) => {
     vramTouchedRef.current = false;
     setGpu(next);
+  };
+  const setContextWithTip = (v: number) => {
+    maybeShowShareTip();
+    setContext(v);
+  };
+  const setConcurrencyWithTip = (v: number) => {
+    maybeShowShareTip();
+    setConcurrency(v);
+  };
+  const setSafetyWithTip = (v: number) => {
+    maybeShowShareTip();
+    setSafety(v);
+  };
+  const setSysRamWithTip = (v: number) => {
+    maybeShowShareTip();
+    setSysRam(v);
   };
 
   // Share button: copy current URL to clipboard.
@@ -201,11 +238,49 @@ export default function Calculator({
 
   return (
     <div className="calc" id="calculator" data-screen-label="calculator">
-      <div className="calc-header">
+      <div className="calc-header" style={{ position: "relative" }}>
         <span>
           {`$ vrambudget --gpu ${gpu.slug} --ctx ${context} --conc ${concurrency} --safety ${safety}%`}
         </span>
-        <span style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 16, position: "relative" }}>
+          {showShareTip && (
+            <div
+              role="status"
+              aria-live="polite"
+              onClick={() => setShowShareTip(false)}
+              style={{
+                position: "absolute",
+                top: "calc(100% + 10px)",
+                right: 0,
+                zIndex: 10,
+                maxWidth: 260,
+                padding: "10px 14px",
+                backgroundColor: "var(--accent)",
+                color: "var(--bg)",
+                fontFamily: "var(--mono)",
+                fontSize: 11,
+                lineHeight: 1.5,
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
+                cursor: "pointer",
+                animation: "fadeIn 240ms ease-out",
+              }}
+            >
+              <span style={{ fontWeight: 600 }}>↗ COPY LINK</span> to share
+              this exact config. URL carries every setting.
+              <span
+                style={{
+                  display: "block",
+                  marginTop: 6,
+                  fontSize: 10,
+                  opacity: 0.7,
+                  letterSpacing: "0.06em",
+                }}
+              >
+                tap to dismiss
+              </span>
+            </div>
+          )}
           <button
             type="button"
             onClick={handleShare}
@@ -221,6 +296,7 @@ export default function Calculator({
               letterSpacing: "0.06em",
               cursor: "pointer",
               transition: "color 80ms linear, border-color 80ms linear",
+              boxShadow: showShareTip ? "0 0 0 3px var(--accent-soft)" : "none",
             }}
           >
             {copied ? "✓ copied" : "↗ copy link"}
@@ -282,7 +358,7 @@ export default function Calculator({
             max={512}
             step={8}
             unit="GB"
-            onChange={setSysRam}
+            onChange={setSysRamWithTip}
           />
           <SliderRow
             label="Context"
@@ -291,7 +367,7 @@ export default function Calculator({
             max={131072}
             step={1024}
             unit="tok"
-            onChange={setContext}
+            onChange={setContextWithTip}
             format={(v) => (v >= 1024 ? `${(v / 1024).toFixed(0)}K` : String(v))}
           />
           <SliderRow
@@ -301,7 +377,7 @@ export default function Calculator({
             max={16}
             step={1}
             unit="req"
-            onChange={setConcurrency}
+            onChange={setConcurrencyWithTip}
           />
           <SliderRow
             label="Safety headroom"
@@ -310,7 +386,7 @@ export default function Calculator({
             max={40}
             step={1}
             unit="%"
-            onChange={setSafety}
+            onChange={setSafetyWithTip}
           />
         </div>
 
