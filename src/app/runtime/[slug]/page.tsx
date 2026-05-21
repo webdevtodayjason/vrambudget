@@ -5,7 +5,9 @@ import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import GiscusComments from '@/components/GiscusComments';
+import BrandLogo from '@/components/BrandLogo';
 import { RUNTIMES, runtimeBySlug, otherRuntimes } from '@/lib/runtimes';
+import { runtimeBrand } from '@/lib/brand-map';
 
 type Params = { slug: string };
 
@@ -60,7 +62,21 @@ export default async function RuntimeDetailPage({
             <span className="sep">/</span>
             <span style={{ color: 'var(--text)' }}>{r.slug}</span>
           </div>
-          <h1>{r.name}</h1>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              marginTop: 8,
+            }}
+          >
+            <BrandLogo
+              brand={runtimeBrand(r.slug)}
+              size={28}
+              ariaLabel={`${r.name} brand`}
+            />
+            <h1 style={{ margin: 0 }}>{r.name}</h1>
+          </div>
           <p className="summary">{r.oneLiner}</p>
           <div className="detail-stats">
             <div className="detail-stat">

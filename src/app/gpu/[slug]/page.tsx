@@ -6,11 +6,13 @@ import Footer from '@/components/Footer';
 import Calculator from '@/components/Calculator';
 import FitRowMath from '@/components/FitRowMath';
 import GiscusComments from '@/components/GiscusComments';
+import BrandLogo from '@/components/BrandLogo';
 import { GPUS, gpuBySlug, nearbyGpusByVram, type GPU } from '@/lib/gpus';
 import { MODELS } from '@/lib/models';
 import { bestQuantForBudget } from '@/lib/quants';
 import { weightsBudget, modelSizeGB, classifyFit, fmtGB, type FitClass } from '@/lib/vram';
 import { explainFit } from '@/lib/fit-math';
+import { gpuManufacturer } from '@/lib/brand-map';
 
 type Params = { slug: string };
 
@@ -115,13 +117,27 @@ export default async function GpuDetailPage({
             <span className="sep">/</span>
             <span style={{ color: 'var(--text)' }}>{gpu.slug}</span>
           </div>
-          <h1>
-            {gpu.name}{' '}
-            <span className="accent">
-              {gpu.vramGB}
-              <span style={{ fontSize: '0.55em' }}>GB</span>
-            </span>
-          </h1>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              marginTop: 8,
+            }}
+          >
+            <BrandLogo
+              brand={gpuManufacturer(gpu.category)}
+              size={28}
+              ariaLabel={`${gpuManufacturer(gpu.category)} manufacturer`}
+            />
+            <h1 style={{ margin: 0 }}>
+              {gpu.name}{' '}
+              <span className="accent">
+                {gpu.vramGB}
+                <span style={{ fontSize: '0.55em' }}>GB</span>
+              </span>
+            </h1>
+          </div>
           <p className="summary">{gpu.summary}</p>
           <div className="detail-stats">
             <div className="detail-stat">

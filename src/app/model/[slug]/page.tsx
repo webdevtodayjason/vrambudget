@@ -4,11 +4,13 @@ import { notFound } from 'next/navigation';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import GiscusComments from '@/components/GiscusComments';
+import BrandLogo from '@/components/BrandLogo';
 import {
   MODELS,
   modelBySlug,
   similarModelsByParams,
 } from '@/lib/models';
+import { modelProvider } from '@/lib/brand-map';
 import { GPUS, type GPU } from '@/lib/gpus';
 import { QUANTS, type Quant } from '@/lib/quants';
 import {
@@ -128,9 +130,37 @@ export default async function ModelDetailPage({
             <span className="sep">/</span>
             <Link href="/model/">model</Link>
             <span className="sep">/</span>
-            <span style={{ color: 'var(--text)' }}>{m.hfRepo}</span>
+            <a
+              href={`https://huggingface.co/${m.hfRepo}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: 'var(--text)',
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+              }}
+            >
+              <BrandLogo brand="huggingface" size={14} color="var(--accent)" />
+              {m.hfRepo}
+            </a>
           </div>
-          <h1>{m.name}</h1>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              marginTop: 8,
+            }}
+          >
+            <BrandLogo
+              brand={modelProvider(m.family)}
+              size={28}
+              ariaLabel={`${m.family} provider`}
+            />
+            <h1 style={{ margin: 0 }}>{m.name}</h1>
+          </div>
           <p className="summary">{m.summary}</p>
           <div className="detail-stats">
             <div className="detail-stat">
