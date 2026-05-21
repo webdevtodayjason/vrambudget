@@ -18,3 +18,7 @@ tmp
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# build internals (kept locally, not public)
+docs/
+ORCHESTRATION.md
