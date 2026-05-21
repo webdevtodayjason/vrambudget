@@ -39,6 +39,7 @@ import {
   readCalcUrl,
   type CalcTab,
 } from "@/lib/calc-url";
+import GlossaryTooltip from "./GlossaryTooltip";
 
 // ────────────────────────────────────────────────────────────────────────────
 // public surface
@@ -343,7 +344,8 @@ export default function Calculator({
       <div className="calc-body">
         <div className="sliders">
           <SliderRow
-            label="VRAM"
+            label={<GlossaryTooltip slug="vram" variant="label">VRAM</GlossaryTooltip>}
+            ariaLabel="VRAM"
             value={vram}
             min={4}
             max={192}
@@ -353,6 +355,7 @@ export default function Calculator({
           />
           <SliderRow
             label="System RAM"
+            ariaLabel="System RAM"
             value={sysRam}
             min={8}
             max={512}
@@ -361,7 +364,8 @@ export default function Calculator({
             onChange={setSysRamWithTip}
           />
           <SliderRow
-            label="Context"
+            label={<GlossaryTooltip slug="context-window" variant="label">Context</GlossaryTooltip>}
+            ariaLabel="Context"
             value={context}
             min={2048}
             max={131072}
@@ -371,7 +375,8 @@ export default function Calculator({
             format={(v) => (v >= 1024 ? `${(v / 1024).toFixed(0)}K` : String(v))}
           />
           <SliderRow
-            label="Concurrency"
+            label={<GlossaryTooltip slug="concurrency" variant="label">Concurrency</GlossaryTooltip>}
+            ariaLabel="Concurrency"
             value={concurrency}
             min={1}
             max={16}
@@ -380,7 +385,8 @@ export default function Calculator({
             onChange={setConcurrencyWithTip}
           />
           <SliderRow
-            label="Safety headroom"
+            label={<GlossaryTooltip slug="safety-headroom" variant="label">Safety headroom</GlossaryTooltip>}
+            ariaLabel="Safety headroom"
             value={safety}
             min={5}
             max={40}
@@ -537,7 +543,9 @@ function GpuGridSection({
 // ────────────────────────────────────────────────────────────────────────────
 
 interface SliderRowProps {
-  label: string;
+  label: import('react').ReactNode;
+  /** Plain-text label, used for the aria-label on the <input>. */
+  ariaLabel: string;
   value: number;
   min: number;
   max: number;
@@ -549,6 +557,7 @@ interface SliderRowProps {
 
 function SliderRow({
   label,
+  ariaLabel,
   value,
   min,
   max,
@@ -567,7 +576,7 @@ function SliderRow({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        aria-label={label}
+        aria-label={ariaLabel}
       />
       <div className="val">
         {format ? format(value) : value}
@@ -594,7 +603,8 @@ function TilesPanel({ total, kv, overhead, budget }: TilesPanelProps) {
     <div className="tiles">
       <div className="tile">
         <div className="lbl">
-          <span className="dash">01</span> Total VRAM
+          <span className="dash">01</span>{' '}
+          <GlossaryTooltip slug="vram" variant="label">Total VRAM</GlossaryTooltip>
         </div>
         <div className="num tnum">
           {fmtGB(total)}
@@ -604,7 +614,8 @@ function TilesPanel({ total, kv, overhead, budget }: TilesPanelProps) {
       </div>
       <div className="tile">
         <div className="lbl">
-          <span className="dash">02</span> KV cache
+          <span className="dash">02</span>{' '}
+          <GlossaryTooltip slug="kv-cache" variant="label">KV cache</GlossaryTooltip>
         </div>
         <div className="num tnum">
           {fmtGB(kv)}
@@ -614,7 +625,8 @@ function TilesPanel({ total, kv, overhead, budget }: TilesPanelProps) {
       </div>
       <div className="tile">
         <div className="lbl">
-          <span className="dash">03</span> Runtime overhead
+          <span className="dash">03</span>{' '}
+          <GlossaryTooltip slug="framework-overhead" variant="label">Runtime overhead</GlossaryTooltip>
         </div>
         <div className="num tnum">
           {fmtGB(overhead)}
@@ -626,7 +638,8 @@ function TilesPanel({ total, kv, overhead, budget }: TilesPanelProps) {
       </div>
       <div className="tile accent">
         <div className="lbl">
-          <span className="dash">04</span> Weights budget
+          <span className="dash">04</span>{' '}
+          <GlossaryTooltip slug="parameters" variant="label">Weights budget</GlossaryTooltip>
         </div>
         <div className="num tnum">
           {fmtGB(budget)}

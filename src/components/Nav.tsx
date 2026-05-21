@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-type NavActive = 'calculator' | 'math' | 'glossary' | 'gpus' | 'models' | 'runtimes' | null;
+type NavActive = 'calculator' | 'math' | 'glossary' | 'learn' | 'gpus' | 'models' | 'runtimes' | null;
 
 export type NavProps = { active?: NavActive };
 
@@ -22,6 +22,9 @@ export default function Nav({ active = null }: NavProps) {
         <div className="nav-links">
           <Link href="/calc/" className={cls('calculator')}>
             Calculator
+          </Link>
+          <Link href="/learn/" className={cls('learn')}>
+            Learn
           </Link>
           <Link href="/the-math" className={cls('math')}>
             The math

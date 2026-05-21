@@ -22,3 +22,8 @@ next-env.d.ts
 # build internals (kept locally, not public)
 docs/
 ORCHESTRATION.md
+
+# HF stats cache (regenerated at build; committed for offline builds)
+# Uncomment the next line to gitignore the cache. Default: committed so the
+# site can render stats even without network access at build time.
+# data/hf-stats.json

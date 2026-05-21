@@ -12,6 +12,7 @@ import {
   similarModelsByParams,
 } from '@/lib/models';
 import { modelProvider } from '@/lib/brand-map';
+import { hfStatFor, fmtDownloadsAbbr, fmtRelativeDays } from '@/lib/hf-stats';
 import { GPUS, type GPU } from '@/lib/gpus';
 import { QUANTS, type Quant } from '@/lib/quants';
 import {
@@ -206,6 +207,52 @@ export default async function ModelDetailPage({
             </div>
             <RuntimeBadges runtimes={m.runtimes} />
           </div>
+
+          {(() => {
+            const hf = hfStatFor(m.slug);
+            if (!hf) return null;
+            const dl = fmtDownloadsAbbr(hf.downloads);
+            const updated = fmtRelativeDays(hf.last_modified);
+            const bits: string[] = [];
+            if (dl) bits.push(`${dl} downloads`);
+            if (typeof hf.likes === 'number' && hf.likes > 0) bits.push(`${fmtDownloadsAbbr(hf.likes)} likes`);
+            if (hf.license) bits.push(`license: ${hf.license}`);
+            if (updated) bits.push(`updated ${updated}`);
+            if (bits.length === 0) return null;
+            return (
+              <div style={{ marginTop: 20 }}>
+                <div
+                  style={{
+                    fontFamily: 'var(--mono)',
+                    fontSize: 11,
+                    color: 'var(--text-faint)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    marginBottom: 10,
+                  }}
+                >
+                  {'// '}hugging face stats (cached daily)
+                </div>
+                <div
+                  style={{
+                    fontFamily: 'var(--mono)',
+                    fontSize: 13,
+                    color: 'var(--text-dim)',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '6px 18px',
+                  }}
+                >
+                  {bits.map((b, i) => (
+                    <span key={i}>
+                      {b}
+                      {i < bits.length - 1 ? ' · ' : ''}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </section>
 

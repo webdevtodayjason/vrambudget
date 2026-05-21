@@ -3,6 +3,7 @@ import type { MetadataRoute } from 'next';
 import { GPUS } from '@/lib/gpus';
 import { MODELS } from '@/lib/models';
 import { RUNTIMES } from '@/lib/runtimes';
+import { POPULAR_COMPARISONS, canonicalPair } from '@/lib/compare';
 
 const BASE_URL = 'https://vrambudget.com';
 
@@ -31,6 +32,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency,
       priority: 0.85,
+    },
+    {
+      url: `${BASE_URL}/learn/`,
+      lastModified,
+      changeFrequency,
+      priority: 0.92,
     },
     {
       url: `${BASE_URL}/calc/`,
@@ -70,6 +77,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     ...RUNTIMES.map((r) => ({
       url: `${BASE_URL}/runtime/${r.slug}/`,
+      lastModified,
+      changeFrequency,
+      priority: 0.8,
+    })),
+    ...POPULAR_COMPARISONS.map(({ a, b }) => {
+      const c = canonicalPair(a, b);
+      return {
+        url: `${BASE_URL}/compare/${c.a}/${c.b}/`,
+        lastModified,
+        changeFrequency,
+        priority: 0.75,
+      };
+    }),
+    ...MODELS.map((m) => ({
+      url: `${BASE_URL}/can-i-run/${m.slug}/`,
+      lastModified,
+      changeFrequency,
+      priority: 0.8,
+    })),
+    ...MODELS.map((m) => ({
+      url: `${BASE_URL}/best-gpu-for/${m.slug}/`,
       lastModified,
       changeFrequency,
       priority: 0.8,

@@ -9,7 +9,7 @@
     "start": "next start -p ${PORT:-3000} -H 0.0.0.0",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "prebuild": "echo 'prebuild placeholder: HF enrichment slot (S3 will wire this)'",
+    "prebuild": "tsx scripts/refresh-hf-stats.ts",
     "postbuild": "echo 'postbuild: AVL is now served via /api/agent route handlers (see next.config.ts rewrites)'"
   },
   "dependencies": {

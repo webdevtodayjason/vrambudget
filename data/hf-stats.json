@@ -1,0 +1,271 @@
+{
+  "llama-3-2-1b": {
+    "hf_repo": "meta-llama/Llama-3.2-1B-Instruct",
+    "downloads": 7924282,
+    "likes": 1416,
+    "last_modified": "2024-10-24T15:07:51.000Z",
+    "library": "transformers",
+    "license": "llama3.2",
+    "fetched_at": "2026-05-21T15:11:13.349Z"
+  },
+  "llama-3-2-3b": {
+    "hf_repo": "meta-llama/Llama-3.2-3B-Instruct",
+    "downloads": 2205212,
+    "likes": 2139,
+    "last_modified": "2024-10-24T15:07:29.000Z",
+    "library": "transformers",
+    "license": "llama3.2",
+    "fetched_at": "2026-05-21T15:11:13.498Z"
+  },
+  "llama-3-1-8b": {
+    "hf_repo": "meta-llama/Llama-3.1-8B-Instruct",
+    "downloads": 10933148,
+    "likes": 5864,
+    "last_modified": "2024-09-25T17:00:57.000Z",
+    "library": "transformers",
+    "license": "llama3.1",
+    "fetched_at": "2026-05-21T15:11:13.649Z"
+  },
+  "llama-3-3-70b": {
+    "hf_repo": "meta-llama/Llama-3.3-70B-Instruct",
+    "downloads": 980693,
+    "likes": 2769,
+    "last_modified": "2024-12-21T18:28:01.000Z",
+    "library": "transformers",
+    "license": "llama3.3",
+    "fetched_at": "2026-05-21T15:11:13.872Z"
+  },
+  "llama-3-1-405b": {
+    "hf_repo": "meta-llama/Llama-3.1-405B-Instruct",
+    "downloads": 230342,
+    "likes": 594,
+    "last_modified": "2024-09-25T17:02:11.000Z",
+    "library": "transformers",
+    "license": "llama3.1",
+    "fetched_at": "2026-05-21T15:11:14.019Z"
+  },
+  "qwen-2-5-7b": {
+    "hf_repo": "Qwen/Qwen2.5-7B-Instruct",
+    "downloads": 13288843,
+    "likes": 1286,
+    "last_modified": "2025-01-12T02:10:10.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:14.166Z"
+  },
+  "qwen-2-5-32b": {
+    "hf_repo": "Qwen/Qwen2.5-32B-Instruct",
+    "downloads": 883069,
+    "likes": 350,
+    "last_modified": "2024-09-25T12:33:09.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:14.308Z"
+  },
+  "qwen-2-5-coder-32b": {
+    "hf_repo": "Qwen/Qwen2.5-Coder-32B-Instruct",
+    "downloads": 764060,
+    "likes": 2018,
+    "last_modified": "2025-01-12T02:02:22.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:14.452Z"
+  },
+  "qwen-2-5-72b": {
+    "hf_repo": "Qwen/Qwen2.5-72B-Instruct",
+    "downloads": 883005,
+    "likes": 940,
+    "last_modified": "2025-01-12T02:07:38.000Z",
+    "library": "transformers",
+    "license": "other",
+    "fetched_at": "2026-05-21T15:11:14.598Z"
+  },
+  "qwen-3-30b-a3b": {
+    "hf_repo": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+    "downloads": 1134407,
+    "likes": 809,
+    "last_modified": "2025-09-17T06:56:43.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:14.749Z"
+  },
+  "qwen-3-5-9b": {
+    "hf_repo": "Qwen/Qwen3.5-9B",
+    "downloads": 8010290,
+    "likes": 1460,
+    "last_modified": "2026-03-02T00:51:43.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:14.918Z"
+  },
+  "qwen-3-6-27b": {
+    "hf_repo": "Qwen/Qwen3.6-27B",
+    "downloads": 3928039,
+    "likes": 1363,
+    "last_modified": "2026-04-24T02:39:16.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:15.061Z"
+  },
+  "qwen-3-6-35b-a3b": {
+    "hf_repo": "Qwen/Qwen3.6-35B-A3B",
+    "downloads": 5895569,
+    "likes": 1844,
+    "last_modified": "2026-04-24T02:53:42.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:15.206Z"
+  },
+  "gpt-oss-20b": {
+    "hf_repo": "openai/gpt-oss-20b",
+    "downloads": 7882008,
+    "likes": 4627,
+    "last_modified": "2025-08-26T17:25:47.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:15.442Z"
+  },
+  "gpt-oss-120b": {
+    "hf_repo": "openai/gpt-oss-120b",
+    "downloads": 4938492,
+    "likes": 4790,
+    "last_modified": "2025-08-26T17:25:03.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:15.813Z"
+  },
+  "mistral-7b": {
+    "hf_repo": "mistralai/Mistral-7B-Instruct-v0.3",
+    "downloads": 4484786,
+    "likes": 2581,
+    "last_modified": "2025-12-03T12:13:48.000Z",
+    "library": "vllm",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:16.066Z"
+  },
+  "mistral-small-3": {
+    "hf_repo": "mistralai/Mistral-Small-24B-Instruct-2501",
+    "downloads": 75999,
+    "likes": 958,
+    "last_modified": "2025-07-28T17:26:22.000Z",
+    "library": "vllm",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:20.578Z"
+  },
+  "mixtral-8x7b": {
+    "hf_repo": "mistralai/Mixtral-8x7B-Instruct-v0.1",
+    "downloads": 592963,
+    "likes": 4680,
+    "last_modified": "2025-07-24T16:41:06.000Z",
+    "library": "vllm",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:20.799Z"
+  },
+  "mixtral-8x22b": {
+    "hf_repo": "mistralai/Mixtral-8x22B-Instruct-v0.1",
+    "downloads": 26172,
+    "likes": 751,
+    "last_modified": "2025-07-24T16:41:56.000Z",
+    "library": "vllm",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:25.768Z"
+  },
+  "phi-4-mini": {
+    "hf_repo": "microsoft/Phi-4-mini-instruct",
+    "downloads": 1581138,
+    "likes": 739,
+    "last_modified": "2025-12-10T20:24:40.000Z",
+    "library": "transformers",
+    "license": "mit",
+    "fetched_at": "2026-05-21T15:11:25.984Z"
+  },
+  "phi-4": {
+    "hf_repo": "microsoft/phi-4",
+    "downloads": 744017,
+    "likes": 2242,
+    "last_modified": "2025-11-24T16:57:37.000Z",
+    "library": "transformers",
+    "license": "mit",
+    "fetched_at": "2026-05-21T15:11:26.169Z"
+  },
+  "gemma-2-9b": {
+    "hf_repo": "google/gemma-2-9b-it",
+    "downloads": 409646,
+    "likes": 803,
+    "last_modified": "2024-08-27T19:41:49.000Z",
+    "library": "transformers",
+    "license": "gemma",
+    "fetched_at": "2026-05-21T15:11:26.345Z"
+  },
+  "gemma-4-e4b": {
+    "hf_repo": "google/gemma-4-E4B-it",
+    "downloads": 6273517,
+    "likes": 1053,
+    "last_modified": "2026-05-18T16:24:57.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:26.516Z"
+  },
+  "gemma-4-26b": {
+    "hf_repo": "google/gemma-4-26B-A4B-it",
+    "downloads": 9446125,
+    "likes": 981,
+    "last_modified": "2026-05-18T16:25:07.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:26.664Z"
+  },
+  "deepseek-v3": {
+    "hf_repo": "deepseek-ai/DeepSeek-V3",
+    "downloads": 1219178,
+    "likes": 4071,
+    "last_modified": "2025-03-27T04:01:45.000Z",
+    "library": "transformers",
+    "fetched_at": "2026-05-21T15:11:27.606Z"
+  },
+  "deepseek-r1": {
+    "hf_repo": "deepseek-ai/DeepSeek-R1",
+    "downloads": 4181061,
+    "likes": 13333,
+    "last_modified": "2025-03-27T04:01:59.000Z",
+    "library": "transformers",
+    "license": "mit",
+    "fetched_at": "2026-05-21T15:11:27.770Z"
+  },
+  "yi-34b": {
+    "hf_repo": "01-ai/Yi-34B-Chat",
+    "downloads": 74494,
+    "likes": 356,
+    "last_modified": "2024-11-11T03:36:35.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:27.925Z"
+  },
+  "command-r-plus": {
+    "hf_repo": "CohereForAI/c4ai-command-r-plus",
+    "downloads": 3038,
+    "likes": 1780,
+    "last_modified": "2025-04-16T03:03:37.000Z",
+    "library": "transformers",
+    "license": "cc-by-nc-4.0",
+    "fetched_at": "2026-05-21T15:11:28.250Z"
+  },
+  "granite-8b": {
+    "hf_repo": "ibm-granite/granite-8b-code-instruct",
+    "downloads": 11331,
+    "likes": 115,
+    "last_modified": "2026-04-25T12:37:09.000Z",
+    "library": "transformers",
+    "license": "apache-2.0",
+    "fetched_at": "2026-05-21T15:11:28.625Z"
+  },
+  "starcoder2-15b": {
+    "hf_repo": "bigcode/starcoder2-15b",
+    "downloads": 16467,
+    "likes": 670,
+    "last_modified": "2024-06-05T19:52:45.000Z",
+    "library": "transformers",
+    "license": "bigcode-openrail-m",
+    "fetched_at": "2026-05-21T15:11:28.788Z"
+  }
+}

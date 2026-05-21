@@ -16,6 +16,7 @@ import { registerRuntimeIndexView } from './_views/runtime-index';
 import { registerAllGpuViews } from './_views/all-gpus';
 import { registerAllModelViews } from './_views/all-models';
 import { registerAllRuntimeViews } from './_views/all-runtimes';
+import { registerScenariosAndExtras } from './_views/scenarios-and-extras';
 
 registerHomeView();
 registerMathView();
@@ -27,3 +28,4 @@ registerRuntimeIndexView();
 registerAllGpuViews();
 registerAllModelViews();
 registerAllRuntimeViews();
+registerScenariosAndExtras();
