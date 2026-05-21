@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-type NavActive = 'calculator' | 'math' | 'gpus' | 'models' | null;
+type NavActive = 'calculator' | 'math' | 'gpus' | 'models' | 'runtimes' | null;
 
 export type NavProps = { active?: NavActive };
 
@@ -31,6 +31,9 @@ export default function Nav({ active = null }: NavProps) {
           </Link>
           <Link href="/model/" className={cls('models')}>
             Models
+          </Link>
+          <Link href="/runtime/" className={cls('runtimes')}>
+            Runtimes
           </Link>
           <a
             href={GITHUB_URL}
