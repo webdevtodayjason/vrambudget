@@ -1,8 +1,16 @@
 // src/lib/models.ts
+//
+// Curated model catalog. Refreshed 2026-05-21.
+// Curation strategy lives in README.md ("Keeping the catalog fresh"); the short
+// version: canonical orgs only (meta-llama, Qwen, openai, google, deepseek-ai,
+// mistralai, microsoft, etc.), refreshed roughly quarterly to track new
+// canonical releases. Trending GGUF remixes and uncensored forks are surfaced
+// live via the "Search Hugging Face" tab, not pinned here.
 
 export type ModelFamily =
   | 'Meta'
   | 'Alibaba'
+  | 'OpenAI'
   | 'Mistral'
   | 'Microsoft'
   | 'Google'
@@ -17,16 +25,41 @@ export interface Model {
   name: string;
   hfRepo: string;
   params: number;        // billions, total
-  activeParams?: number; // billions, for MoE
+  activeParams?: number; // billions, for MoE (active per forward pass)
   family: ModelFamily;
   type: 'dense' | 'moe';
   contextK: number;
   fp16GB: number;
   summary: string;
+  releaseQuarter?: string; // e.g. '2024-Q4' for "when did this drop"
 }
 
 export const MODELS: Model[] = [
-  // Meta
+  // ── Meta ──────────────────────────────────────────────────────────
+  {
+    slug: 'llama-3-2-1b',
+    name: 'Llama 3.2 1B',
+    hfRepo: 'meta-llama/Llama-3.2-1B-Instruct',
+    params: 1.23,
+    family: 'Meta',
+    type: 'dense',
+    contextK: 128,
+    fp16GB: 2.46,
+    summary: 'Sub-2B edge tier. Runs on phones and 8GB consumer cards. Multilingual instruct.',
+    releaseQuarter: '2024-Q3',
+  },
+  {
+    slug: 'llama-3-2-3b',
+    name: 'Llama 3.2 3B',
+    hfRepo: 'meta-llama/Llama-3.2-3B-Instruct',
+    params: 3.21,
+    family: 'Meta',
+    type: 'dense',
+    contextK: 128,
+    fp16GB: 6.42,
+    summary: 'Edge-tier. Assistant-quality on a 6GB GPU. 128K context.',
+    releaseQuarter: '2024-Q3',
+  },
   {
     slug: 'llama-3-1-8b',
     name: 'Llama 3.1 8B',
@@ -37,17 +70,19 @@ export const MODELS: Model[] = [
     contextK: 128,
     fp16GB: 16.0,
     summary: "Meta's small workhorse. Runs comfortably on any 8GB+ card at Q4 or any 12GB+ at FP16.",
+    releaseQuarter: '2024-Q3',
   },
   {
-    slug: 'llama-3-1-70b',
-    name: 'Llama 3.1 70B',
-    hfRepo: 'meta-llama/Llama-3.1-70B-Instruct',
-    params: 70.0,
+    slug: 'llama-3-3-70b',
+    name: 'Llama 3.3 70B',
+    hfRepo: 'meta-llama/Llama-3.3-70B-Instruct',
+    params: 70.6,
     family: 'Meta',
     type: 'dense',
     contextK: 128,
-    fp16GB: 140.0,
-    summary: "Meta's flagship open-weight. Fits comfortably on 48GB at Q5_K_M; tightly on a 24GB at Q3_K_M.",
+    fp16GB: 141.2,
+    summary: "Meta's late-2024 70B. Closes the gap to GPT-4o-mini at the same VRAM footprint as 3.1 70B.",
+    releaseQuarter: '2024-Q4',
   },
   {
     slug: 'llama-3-1-405b',
@@ -58,9 +93,11 @@ export const MODELS: Model[] = [
     type: 'dense',
     contextK: 128,
     fp16GB: 810.0,
-    summary: 'The big one. Q4 needs ~200GB. Single-GPU options exist (MI300X, B200) but rare.',
+    summary: "The big one. 810GB at FP16 puts it in DGX or multi-GPU territory. Q3-Q4 quants fit on 2x H100 NVL or M3 Ultra 512.",
+    releaseQuarter: '2024-Q3',
   },
-  // Alibaba (Qwen)
+
+  // ── Alibaba (Qwen) ────────────────────────────────────────────────
   {
     slug: 'qwen-2-5-7b',
     name: 'Qwen 2.5 7B',
@@ -70,31 +107,125 @@ export const MODELS: Model[] = [
     type: 'dense',
     contextK: 128,
     fp16GB: 14.0,
-    summary: "Alibaba's small model. Strong multilingual. Same fit envelope as Llama 3.1 8B.",
+    summary: 'Alibaba\'s 7B reference. Strong multilingual; great FP16 fit on consumer cards.',
+    releaseQuarter: '2024-Q3',
   },
   {
     slug: 'qwen-2-5-32b',
     name: 'Qwen 2.5 32B',
     hfRepo: 'Qwen/Qwen2.5-32B-Instruct',
-    params: 32.0,
+    params: 32.5,
     family: 'Alibaba',
     type: 'dense',
     contextK: 128,
-    fp16GB: 64.0,
-    summary: '32B sweet spot. Q4 runs on a 4090; Q8 comfortable on the H100.',
+    fp16GB: 65.0,
+    summary: 'Alibaba\'s mid-range workhorse. Q4_K_M lands at ~18 GB, the canonical "fits on a 24GB" 30B-class.',
+    releaseQuarter: '2024-Q3',
+  },
+  {
+    slug: 'qwen-2-5-coder-32b',
+    name: 'Qwen 2.5 Coder 32B',
+    hfRepo: 'Qwen/Qwen2.5-Coder-32B-Instruct',
+    params: 32.5,
+    family: 'Alibaba',
+    type: 'dense',
+    contextK: 128,
+    fp16GB: 65.0,
+    summary: 'Code-specialized 32B. Near-GPT-4 code completion and repair at local-inference cost.',
+    releaseQuarter: '2024-Q4',
   },
   {
     slug: 'qwen-2-5-72b',
     name: 'Qwen 2.5 72B',
     hfRepo: 'Qwen/Qwen2.5-72B-Instruct',
-    params: 72.0,
+    params: 72.7,
     family: 'Alibaba',
     type: 'dense',
     contextK: 128,
-    fp16GB: 144.0,
-    summary: "Llama-3.1-70B's strongest open competitor. Same hardware story.",
+    fp16GB: 145.4,
+    summary: 'Alibaba\'s 70B-class flagship. Comparable footprint to Llama 70B; different inflections on benchmarks.',
+    releaseQuarter: '2024-Q3',
   },
-  // Mistral
+  {
+    slug: 'qwen-3-30b-a3b',
+    name: 'Qwen3 30B A3B',
+    hfRepo: 'Qwen/Qwen3-30B-A3B-Instruct-2507',
+    params: 30.5,
+    activeParams: 3.3,
+    family: 'Alibaba',
+    type: 'moe',
+    contextK: 256,
+    fp16GB: 61.0,
+    summary: 'Qwen3 MoE: 30B total, 3B active. Tokens per second of a 3B model at the quality of a 30B.',
+    releaseQuarter: '2025-Q3',
+  },
+  {
+    slug: 'qwen-3-5-9b',
+    name: 'Qwen 3.5 9B',
+    hfRepo: 'Qwen/Qwen3.5-9B',
+    params: 9.0,
+    family: 'Alibaba',
+    type: 'dense',
+    contextK: 128,
+    fp16GB: 18.0,
+    summary: 'Q1 2026 Qwen3.5 dense. The new sub-10B reference; vision-capable variants ship under the same family.',
+    releaseQuarter: '2026-Q1',
+  },
+  {
+    slug: 'qwen-3-6-27b',
+    name: 'Qwen 3.6 27B',
+    hfRepo: 'Qwen/Qwen3.6-27B',
+    params: 27.0,
+    family: 'Alibaba',
+    type: 'dense',
+    contextK: 128,
+    fp16GB: 54.0,
+    summary: 'Q2 2026 Qwen3.6 dense flagship. Vision + tool calling; tops the Qwen line on most benchmarks.',
+    releaseQuarter: '2026-Q2',
+  },
+  {
+    slug: 'qwen-3-6-35b-a3b',
+    name: 'Qwen 3.6 35B A3B',
+    hfRepo: 'Qwen/Qwen3.6-35B-A3B',
+    params: 35.0,
+    activeParams: 3.0,
+    family: 'Alibaba',
+    type: 'moe',
+    contextK: 256,
+    fp16GB: 70.0,
+    summary: 'Q2 2026 Qwen3.6 MoE flagship. 35B total, 3B active. Vision + multilingual + tool calling.',
+    releaseQuarter: '2026-Q2',
+  },
+
+  // ── OpenAI ────────────────────────────────────────────────────────
+  {
+    slug: 'gpt-oss-20b',
+    name: 'gpt-oss 20B',
+    hfRepo: 'openai/gpt-oss-20b',
+    params: 20.9,
+    activeParams: 3.6,
+    family: 'OpenAI',
+    type: 'moe',
+    contextK: 128,
+    fp16GB: 41.8,
+    summary: "OpenAI's August 2025 open-weight release. MoE; ships MXFP4-quantized at ~13GB on consumer cards.",
+    releaseQuarter: '2025-Q3',
+  },
+  {
+    slug: 'gpt-oss-120b',
+    name: 'gpt-oss 120B',
+    hfRepo: 'openai/gpt-oss-120b',
+    params: 117.0,
+    activeParams: 5.1,
+    family: 'OpenAI',
+    type: 'moe',
+    contextK: 128,
+    fp16GB: 234.0,
+    summary: "OpenAI's open-weight flagship. Near o4-mini on core reasoning; MXFP4 deployment fits a single 80GB H100.",
+    releaseQuarter: '2025-Q3',
+  },
+
+  // ── Mistral ───────────────────────────────────────────────────────
   {
     slug: 'mistral-7b',
     name: 'Mistral 7B v0.3',
@@ -103,8 +234,21 @@ export const MODELS: Model[] = [
     family: 'Mistral',
     type: 'dense',
     contextK: 32,
-    fp16GB: 14.0,
-    summary: 'The reference 7B. Apache-2 licensed. Runs anywhere.',
+    fp16GB: 14.4,
+    summary: 'The original 7B benchmark. Still a reliable baseline; smaller context than the newer entries.',
+    releaseQuarter: '2024-Q2',
+  },
+  {
+    slug: 'mistral-small-3',
+    name: 'Mistral Small 3',
+    hfRepo: 'mistralai/Mistral-Small-24B-Instruct-2501',
+    params: 24.0,
+    family: 'Mistral',
+    type: 'dense',
+    contextK: 32,
+    fp16GB: 48.0,
+    summary: 'January 2025 Mistral 24B. Llama 3.3 70B-tier quality at a third of the VRAM.',
+    releaseQuarter: '2025-Q1',
   },
   {
     slug: 'mixtral-8x7b',
@@ -115,56 +259,51 @@ export const MODELS: Model[] = [
     family: 'Mistral',
     type: 'moe',
     contextK: 32,
-    fp16GB: 93.0,
-    summary: 'MoE — full 46.7B parameters, only ~13B active at a time. Faster than dense at the same fit.',
+    fp16GB: 93.4,
+    summary: 'The MoE that proved sparse models work for inference. 8 experts, 2 active per token.',
+    releaseQuarter: '2023-Q4',
   },
   {
     slug: 'mixtral-8x22b',
     name: 'Mixtral 8x22B',
     hfRepo: 'mistralai/Mixtral-8x22B-Instruct-v0.1',
     params: 141.0,
-    activeParams: 39,
+    activeParams: 39.0,
     family: 'Mistral',
     type: 'moe',
     contextK: 64,
     fp16GB: 282.0,
-    summary: 'Big MoE. Q4 fits on a 96GB workstation; Q3 on a single H100.',
+    summary: 'Big Mixtral. 141B total, 39B active. Multi-GPU or M-series Ultra territory.',
+    releaseQuarter: '2024-Q2',
   },
-  // Microsoft
+
+  // ── Microsoft ─────────────────────────────────────────────────────
   {
-    slug: 'phi-3-mini',
-    name: 'Phi-3 Mini',
-    hfRepo: 'microsoft/Phi-3-mini-128k-instruct',
+    slug: 'phi-4-mini',
+    name: 'Phi-4 Mini',
+    hfRepo: 'microsoft/Phi-4-mini-instruct',
     params: 3.8,
     family: 'Microsoft',
     type: 'dense',
     contextK: 128,
     fp16GB: 7.6,
-    summary: 'Tiny but capable. FP16 fits on any 8GB card with room to spare.',
+    summary: '3.8B Phi-4 distill. Strong reasoning at edge sizes; 128K context.',
+    releaseQuarter: '2025-Q1',
   },
   {
-    slug: 'phi-3-medium',
-    name: 'Phi-3 Medium',
-    hfRepo: 'microsoft/Phi-3-medium-128k-instruct',
-    params: 14.0,
+    slug: 'phi-4',
+    name: 'Phi-4',
+    hfRepo: 'microsoft/phi-4',
+    params: 14.7,
     family: 'Microsoft',
     type: 'dense',
-    contextK: 128,
-    fp16GB: 28.0,
-    summary: '14B with 128K context. Q5 on a 4060 Ti 16GB; FP16 on a 4090.',
+    contextK: 16,
+    fp16GB: 29.4,
+    summary: "Microsoft's synthetic-data 14B. Punches above its weight on math and code.",
+    releaseQuarter: '2024-Q4',
   },
-  {
-    slug: 'wizardlm-2-7b',
-    name: 'WizardLM 2 7B',
-    hfRepo: 'microsoft/WizardLM-2-7B',
-    params: 7.0,
-    family: 'Microsoft',
-    type: 'dense',
-    contextK: 32,
-    fp16GB: 14.0,
-    summary: 'Fine-tune of Mistral 7B. Strong instruction-following. Same fit as Mistral 7B.',
-  },
-  // Google
+
+  // ── Google ────────────────────────────────────────────────────────
   {
     slug: 'gemma-2-9b',
     name: 'Gemma 2 9B',
@@ -174,44 +313,64 @@ export const MODELS: Model[] = [
     type: 'dense',
     contextK: 8,
     fp16GB: 18.0,
-    summary: "Google's small model. Strong on logic, weak on context. FP16 fits on most cards.",
+    summary: 'Google\'s 2024 9B. Solid baseline; shorter context than Gemma 4.',
+    releaseQuarter: '2024-Q2',
   },
   {
-    slug: 'gemma-2-27b',
-    name: 'Gemma 2 27B',
-    hfRepo: 'google/gemma-2-27b-it',
-    params: 27.0,
+    slug: 'gemma-4-e4b',
+    name: 'Gemma 4 E4B',
+    hfRepo: 'google/gemma-4-E4B-it',
+    params: 4.0,
     family: 'Google',
     type: 'dense',
-    contextK: 8,
-    fp16GB: 54.0,
-    summary: '27B sweet spot. Q6 on a 4090; Q8 on an A6000.',
-  },
-  // DeepSeek
-  {
-    slug: 'deepseek-coder-33b',
-    name: 'DeepSeek Coder 33B',
-    hfRepo: 'deepseek-ai/deepseek-coder-33b-instruct',
-    params: 33.0,
-    family: 'DeepSeek',
-    type: 'dense',
-    contextK: 16,
-    fp16GB: 66.0,
-    summary: 'The reference coding model. Q4 on a 4090; Q5 on an A6000.',
+    contextK: 128,
+    fp16GB: 8.0,
+    summary: "Google's April 2026 small Gemma. Multimodal-ready, 128K context.",
+    releaseQuarter: '2026-Q2',
   },
   {
-    slug: 'deepseek-v2-5',
-    name: 'DeepSeek-V2.5',
-    hfRepo: 'deepseek-ai/DeepSeek-V2.5',
-    params: 236.0,
-    activeParams: 21,
+    slug: 'gemma-4-26b',
+    name: 'Gemma 4 26B A4B',
+    hfRepo: 'google/gemma-4-26B-A4B-it',
+    params: 26.0,
+    activeParams: 4.0,
+    family: 'Google',
+    type: 'moe',
+    contextK: 128,
+    fp16GB: 52.0,
+    summary: 'Google\'s 2026 MoE: 26B total, 4B active. Vision-ready.',
+    releaseQuarter: '2026-Q2',
+  },
+
+  // ── DeepSeek ──────────────────────────────────────────────────────
+  {
+    slug: 'deepseek-v3',
+    name: 'DeepSeek V3',
+    hfRepo: 'deepseek-ai/DeepSeek-V3',
+    params: 671.0,
+    activeParams: 37.0,
     family: 'DeepSeek',
     type: 'moe',
     contextK: 128,
-    fp16GB: 472.0,
-    summary: '236B MoE. Q4 fits on a 192GB card. Production answer to GPT-class models.',
+    fp16GB: 1342.0,
+    summary: '671B MoE, 37B active. GPT-4 class on a fraction of the inference cost. Multi-node serving at FP16.',
+    releaseQuarter: '2024-Q4',
   },
-  // 01.AI
+  {
+    slug: 'deepseek-r1',
+    name: 'DeepSeek R1',
+    hfRepo: 'deepseek-ai/DeepSeek-R1',
+    params: 671.0,
+    activeParams: 37.0,
+    family: 'DeepSeek',
+    type: 'moe',
+    contextK: 128,
+    fp16GB: 1342.0,
+    summary: 'V3 plus reasoning post-training. The model that proved RL-from-scratch chain-of-thought works at scale.',
+    releaseQuarter: '2025-Q1',
+  },
+
+  // ── 01.AI ─────────────────────────────────────────────────────────
   {
     slug: 'yi-34b',
     name: 'Yi 34B',
@@ -219,11 +378,13 @@ export const MODELS: Model[] = [
     params: 34.0,
     family: '01.AI',
     type: 'dense',
-    contextK: 200,
+    contextK: 32,
     fp16GB: 68.0,
-    summary: 'Long-context Chinese-English. Q4 on a 4090 with short context; needs more for full 200K.',
+    summary: '01.AI\'s 34B. Bilingual EN/ZH; long-context variants up to 200K available.',
+    releaseQuarter: '2023-Q4',
   },
-  // Cohere
+
+  // ── Cohere ────────────────────────────────────────────────────────
   {
     slug: 'command-r-plus',
     name: 'Command R+',
@@ -233,9 +394,11 @@ export const MODELS: Model[] = [
     type: 'dense',
     contextK: 128,
     fp16GB: 208.0,
-    summary: "Cohere's RAG-tuned flagship. Q4 fits on an H100; Q3 on a 4090 (tight).",
+    summary: 'Cohere\'s 100B-class. Strong RAG and tool-use bench results; non-commercial license.',
+    releaseQuarter: '2024-Q2',
   },
-  // IBM
+
+  // ── IBM ───────────────────────────────────────────────────────────
   {
     slug: 'granite-8b',
     name: 'Granite 8B Code',
@@ -243,11 +406,13 @@ export const MODELS: Model[] = [
     params: 8.0,
     family: 'IBM',
     type: 'dense',
-    contextK: 128,
+    contextK: 8,
     fp16GB: 16.0,
-    summary: "IBM's enterprise-licensed code model. Same fit envelope as Llama 3.1 8B.",
+    summary: 'IBM\'s 8B code-specialist. Apache 2.0; safe enterprise default for code completion.',
+    releaseQuarter: '2024-Q2',
   },
-  // BigCode
+
+  // ── BigCode ───────────────────────────────────────────────────────
   {
     slug: 'starcoder2-15b',
     name: 'StarCoder2 15B',
@@ -257,7 +422,8 @@ export const MODELS: Model[] = [
     type: 'dense',
     contextK: 16,
     fp16GB: 30.0,
-    summary: 'BigCode collaboration. 600 programming languages. FP16 on a 4080 or better.',
+    summary: 'BigCode\'s 15B code reference. Strong fill-in-the-middle; the open StarCoder lineage continues here.',
+    releaseQuarter: '2024-Q1',
   },
 ];
 
@@ -265,29 +431,17 @@ export function modelBySlug(slug: string): Model | undefined {
   return MODELS.find((m) => m.slug === slug);
 }
 
-/**
- * Return the `n` (default 4) models closest to the given slug's params,
- * by absolute parameter distance, excluding the slug itself.
- *
- * Replaces the earlier "±tolerance percent filter" algorithm so the
- * compare panel on /model/[slug] always shows up to n alternatives even
- * for very-large or very-small parameter counts where no other model is
- * within ±30%.
- *
- * Backward-compat: existing callers pass only the slug. The optional
- * second arg used to be a tolerance percentage; it is now a count.
- */
-export function similarModelsByParams(slug: string, n: number = 4): Model[] {
+export function similarModelsByParams(
+  slug: string,
+  n: number = 4,
+): Model[] {
+  const count = n >= 1 ? Math.floor(n) : 4;
   const self = modelBySlug(slug);
   if (!self) return [];
-  // Backward-compat: earlier signature was `(slug, tolerance: number = 0.3)`.
-  // Existing call sites still pass values like 0.3. Treat any non-integer
-  // sub-1 value as legacy and default to 4.
-  const count = n >= 1 ? Math.floor(n) : 4;
   return MODELS
     .filter((m) => m.slug !== slug)
     .map((m) => ({ m, dist: Math.abs(m.params - self.params) }))
     .sort((a, b) => a.dist - b.dist)
     .slice(0, count)
-    .map(({ m }) => m);
+    .map((x) => x.m);
 }

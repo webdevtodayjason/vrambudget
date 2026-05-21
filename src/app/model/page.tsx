@@ -20,6 +20,7 @@ export const dynamic = 'force-static';
 const FAMILY_ORDER: ModelFamily[] = [
   'Meta',
   'Alibaba',
+  'OpenAI',
   'Mistral',
   'Microsoft',
   'Google',

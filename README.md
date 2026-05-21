@@ -94,7 +94,7 @@ The orange tile is the answer. The budget bar below shows the four pieces stacke
 
 Three tabs below the bar:
 
-- **Curated picks** — the 20 catalog models, grouped by fit (fits / tight / over). Each row picks the highest-bit quantization that fits your budget. Click any model name to open its Hugging Face repo.
+- **Curated picks** — the 30 catalog models, grouped by fit (fits / tight / over). Each row picks the highest-bit quantization that fits your budget. Click any model name to open its Hugging Face repo.
 - **Search Hugging Face** — live search across HF's GGUF-tagged models. Type a name; results render with the same fit classification keyed to your current budget.
 - **By size** — drag a params slider; see all nine quants in a 3×3 matrix with the size and fit class for each.
 
@@ -111,20 +111,21 @@ Same for models: every model name links to `/model/<slug>` with the GPU-recommen
 `RTX 50`: 5070 · 5070 Ti · 5080 · 5090
 `RTX 40`: 4060 · 4060 Ti 16GB · 4070 · 4070 Super · 4070 Ti Super · 4080 · 4080 Super · 4090
 `RTX 30`: 3060 · 3070 · 3080 · 3080 Ti · 3090 · 3090 Ti
-`Apple Silicon`: M2 Max 64 · M2 Ultra 192 · M3 Max 64 · M3 Max 96 · M3 Ultra 512 · M4 Pro 64 · M4 Max 128
+`Apple Silicon`: M2 Max 64 · M2 Ultra 192 · M3 Max 64 · M3 Max 96 · M3 Ultra 512 · M4 Pro 64 · M4 Max 128 · M5 Pro 64 · M5 Max 128
 `Workstation`: A6000 · RTX 6000 Ada · RTX Pro 6000 · L40S
 `Datacenter`: H100 80GB · H200 · B200 · DGX Spark · 2× H100 NVL
 `AMD`: RX 7900 XTX · W7900 · MI300X
 `Intel`: Arc B580 · Arc Pro B60 · Gaudi 3
 
-### Models (20 curated)
+### Models (30 curated, refreshed 2026-05)
 
-`Meta`: Llama 3.1 8B / 70B / 405B
-`Alibaba`: Qwen 2.5 7B / 32B / 72B
-`Mistral`: Mistral 7B v0.3 · Mixtral 8x7B · Mixtral 8x22B
-`Microsoft`: Phi-3 Mini / Medium · WizardLM 2 7B
-`Google`: Gemma 2 9B / 27B
-`DeepSeek`: DeepSeek Coder 33B · DeepSeek V2.5
+`Meta`: Llama 3.2 1B · Llama 3.2 3B · Llama 3.1 8B · Llama 3.3 70B · Llama 3.1 405B
+`Alibaba`: Qwen 2.5 7B · Qwen 2.5 32B · Qwen 2.5 Coder 32B · Qwen 2.5 72B · Qwen3 30B A3B · Qwen 3.5 9B · Qwen 3.6 27B · Qwen 3.6 35B A3B
+`OpenAI`: gpt-oss 20B · gpt-oss 120B
+`Mistral`: Mistral 7B v0.3 · Mistral Small 3 · Mixtral 8x7B · Mixtral 8x22B
+`Microsoft`: Phi-4 Mini · Phi-4
+`Google`: Gemma 2 9B · Gemma 4 E4B · Gemma 4 26B A4B
+`DeepSeek`: DeepSeek V3 · DeepSeek R1
 `Cohere`: Command R+
 `IBM`: Granite 8B Code
 `BigCode`: StarCoder2 15B
@@ -133,6 +134,29 @@ Same for models: every model name links to `/model/<slug>` with the GPU-recommen
 ### Quantization formats (9)
 
 `FP16/BF16` · `FP8/INT8` · `Q8_0` · `Q6_K` · `Q5_K_M` · `Q4_K_M` · `Q3_K_M` · `AWQ` · `GPTQ`
+
+### LLM hosting runtimes (5)
+
+`Cross-platform`: Ollama · LM Studio
+`Apple Silicon`: MLX · oMLX
+`Server`: vLLM
+
+## Keeping the catalog fresh
+
+LLMs ship faster than any curated list can keep up. vrambudget runs three feedback loops at once:
+
+1. **Editorial curation** of `src/lib/models.ts` (~quarterly). The pinned list is canonical orgs only: `meta-llama`, `Qwen`, `openai`, `mistralai`, `microsoft`, `google`, `deepseek-ai`, `ibm-granite`, `bigcode`, `01-ai`, `CohereForAI`. Each entry carries a `releaseQuarter` so it's obvious what's stale. Forks, distills, and uncensored remixes belong on Hugging Face, not here.
+
+2. **Live "Search Hugging Face" tab** in the calculator. Calls `https://huggingface.co/api/models?search=<q>&filter=gguf&sort=downloads` directly from the browser. Always current; classifies each result against your VRAM budget on the fly.
+
+3. **Build-time HF enrichment** (Phase 2, not shipped yet). A `scripts/refresh-hf-stats.ts` will fetch `downloads`, `likes`, and `last_modified` for every curated `hfRepo` at build, write the result into `data/hf-stats.json`, and surface it on each model detail page. Entries below a download threshold will get a build warning so they get reviewed in the next editorial pass.
+
+**How to propose a new model:**
+
+1. Confirm it's canonical (an official org repo, not a community quant)
+2. Open a PR to `src/lib/models.ts` with `slug`, `name`, `hfRepo`, `params`, `family`, `type`, `contextK`, `fp16GB`, `summary`, `releaseQuarter`
+3. If MoE, set `activeParams` to active-per-forward-pass count
+4. CI runs `pnpm build` to validate the static export still emits cleanly
 
 ## Agent View Layer (AVL)
 
