@@ -5,17 +5,66 @@ import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import Calculator from '@/components/Calculator';
 import GiscusComments from '@/components/GiscusComments';
+import { buildOgQuery, resolveCalcParams } from '@/lib/og-calc';
 
-export const metadata: Metadata = {
-  title: 'Calculator',
-  description:
-    'Compute your VRAM budget. Share the URL. /calc?gpu=4090&ctx=32k&conc=4 carries every setting.',
-  alternates: {
-    types: { 'text/agent-view': '/calc.agent' },
-  },
-};
+// /calc renders dynamic per-request so generateMetadata({ searchParams })
+// can build a config-specific OG image URL. Every other route is
+// force-static; this is the only dynamic route.
+export const dynamic = 'force-dynamic';
 
-export const dynamic = 'force-static';
+type CalcSearchParams = Record<string, string | string[] | undefined>;
+
+function flattenSearchParams(sp: CalcSearchParams): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(sp)) {
+    if (typeof v === 'string') out[k] = v;
+    else if (Array.isArray(v) && v.length > 0 && typeof v[0] === 'string') out[k] = v[0];
+  }
+  return out;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<CalcSearchParams>;
+}): Promise<Metadata> {
+  const sp = flattenSearchParams(await searchParams);
+  const resolved = resolveCalcParams(sp);
+  const ogQuery = buildOgQuery(resolved);
+  const ogImageUrl = `/api/og/calc${ogQuery}`;
+  const titleSuffix = resolved.gpu
+    ? `${resolved.gpu.name} at ${resolved.contextLabel} ctx`
+    : 'shareable VRAM budget calculator';
+  return {
+    title: 'Calculator',
+    description:
+      'Compute your VRAM budget. Share the URL. /calc?gpu=4090&ctx=32k&conc=4 carries every setting.',
+    alternates: {
+      types: { 'text/agent-view': '/calc.agent' },
+    },
+    openGraph: {
+      type: 'website',
+      siteName: 'vrambudget',
+      title: `vrambudget: ${titleSuffix}`,
+      description: resolved.gpu
+        ? `${resolved.gpu.name} ${resolved.gpu.vramGB}GB · ctx ${resolved.contextLabel} · conc ${resolved.concurrency} · ${resolved.weightsBudget.toFixed(1)}GB weights budget`
+        : 'Plug in your GPU. See what actually fits.',
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: 'vrambudget calculator configuration',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `vrambudget: ${titleSuffix}`,
+      images: [ogImageUrl],
+    },
+  };
+}
 
 export default function CalcPage() {
   return (
