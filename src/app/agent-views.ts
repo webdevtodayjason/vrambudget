@@ -1,0 +1,17 @@
+/**
+ * Central import point for AVL route registrations.
+ *
+ * Each registrar helper pushes its routes into `AGENT_ROUTES` at module
+ * load. The postbuild emitter (`scripts/emit-agent-views.ts`) imports
+ * this file once, then walks the registry to write `out/<route>.agent`
+ * files plus the `out/agent.txt` manifest.
+ */
+import { registerHomeView } from './_views/home';
+import { registerMathView } from './_views/math';
+import { registerAllGpuViews } from './_views/all-gpus';
+import { registerAllModelViews } from './_views/all-models';
+
+registerHomeView();
+registerMathView();
+registerAllGpuViews();
+registerAllModelViews();

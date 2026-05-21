@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The math, plainly — vrambudget</title>
+<meta name="description" content="The full explainer: weights, KV cache, framework overhead, concurrency, and the VRAM tax nobody talks about." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-screen-label="the-math">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-dot"></span>
+      <span>vrambudget</span>
+      <span class="brand-slash">/</span>
+      <span class="brand-sub">v0.3.1</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#calculator">Calculator</a>
+      <a href="the-math.html" class="active">The math</a>
+      <a href="gpu/rtx-4090.html">GPUs</a>
+      <a href="model/llama-3-1-70b.html">Models</a>
+      <a href="#" class="nav-cta">↗ GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<article class="article">
+
+  <div class="kicker">$ /the-math · 14 min read · last updated 2026-05-18</div>
+
+  <h1>The math, plainly.</h1>
+
+  <p class="lede">
+    Most "can my machine run this LLM" tools list models and call it done. They show a green checkmark next to a 70B model on a 24GB card and hope you don't ask why. This is the math they skipped.
+  </p>
+
+  <p>Every parameter in a transformer occupies a fixed number of bits in memory. Multiply them. Divide by eight. The result is gigabytes. That's the entire foundation. Every other line item — KV cache, activations, framework overhead, allocator slack — is just adding to a number you already had.</p>
+
+  <div class="callout">
+    <div class="label">The thesis, in one line</div>
+    <div class="formula"><span class="op">VRAM</span> ≈ params <span class="op">×</span> (bits <span class="op">÷</span> 8)</div>
+  </div>
+
+  <p>The rest of this article walks the additions. Skip to the section that's costing you the most.</p>
+
+  <h2><span class="num">01</span> Weight size: the floor</h2>
+
+  <p>A 70-billion-parameter model loaded in 16-bit precision weighs <span class="dim">70 × 2 = 140 GB</span>. Loaded in 8-bit it weighs 70. In 4-bit, 35. The math doesn't care about the architecture, the training data, or the marketing copy. <span class="dim">It cares about two numbers: how many parameters, and how many bits each one occupies.</span></p>
+
+  <p>Quantization formats like Q4_K_M or AWQ are not exactly 4 bits per parameter — they carry small metadata overheads — but the rule of thumb (params × bits ÷ 8) is accurate to within a few percent. Treat it as gospel for napkin math and you'll be fine.</p>
+
+  <div class="callout">
+    <div class="label">Reference: Llama-3.1-70B</div>
+    <div class="formula">
+      FP16 <span class="op">→</span> 140 GB  <br/>
+      Q8_0 <span class="op">→</span> 74.4 GB <br/>
+      Q5_K_M <span class="op">→</span> 48.1 GB <br/>
+      Q4_K_M <span class="op">→</span> 39.4 GB <br/>
+      Q3_K_M <span class="op">→</span> 30.6 GB
+    </div>
+  </div>
+
+  <h2><span class="num">02</span> KV cache: the context tax</h2>
+
+  <p>Every token your model generates writes a key and a value into every attention layer. These accumulate. At ctx=2K nobody notices. At ctx=32K with concurrency 4, the KV cache <span class="dim">eats more VRAM than the weights</span>.</p>
+
+  <p>The exact formula depends on the architecture (layers × heads × head dimension), but the practical version is: <span class="dim">budget 1–4 GB of KV per concurrent request at long context, on a 70B-class model. More for larger models, less for smaller.</span></p>
+
+  <div class="callout">
+    <div class="label">Per-request KV cache, bytes</div>
+    <div class="formula">2 × layers × heads × head_dim × ctx × bytes_per_param</div>
+  </div>
+
+  <p>This is the single most under-counted line item in every "fit check" tool on the internet. If your tool doesn't ask you for context length, throw it out.</p>
+
+  <h2><span class="num">03</span> Framework overhead: the constant</h2>
+
+  <p>CUDA context, kernel workspaces, paged-attention buffers, allocator fragmentation, the runtime itself. None of this shows up in the model card. All of it is real.</p>
+
+  <p>Rule of thumb: <span class="dim">1.5 GB fixed, plus 3–5% of total device VRAM, depending on backend.</span> vLLM, llama.cpp, TGI, and exllamav2 each have their own constants. We use a generous middle estimate.</p>
+
+  <div class="tax-box">
+    <h3>$ THE VRAM TAX NOBODY TALKS ABOUT</h3>
+    <div class="big">A 24 GB card does not give you 24 GB of weight budget.</div>
+    <p style="color:var(--text-dim); margin-bottom: 18px">By the time you've paid the runtime, the KV cache, and a sane safety margin, you have considerably less. Here is the bill on a stock RTX 4090 at ctx=8K, concurrency 1, 15% safety:</p>
+    <ul>
+      <li><span class="pct">-3.6 GB</span> safety headroom (15% of 24)</li>
+      <li><span class="pct">-2.2 GB</span> framework overhead (1.5 + 4% of 24)</li>
+      <li><span class="pct">-0.8 GB</span> kv cache (ctx 8K, 1 req)</li>
+      <li><span class="pct">17.4 GB</span> ← what's actually left for weights</li>
+    </ul>
+  </div>
+
+  <h2><span class="num">04</span> Concurrency: the multiplier</h2>
+
+  <p>Every concurrent request gets its own KV cache. Two requests, double the KV. Eight requests, eight times. <span class="dim">This is why production inference servers run smaller models than your local llama.cpp setup — they need the headroom for batching.</span></p>
+
+  <p>If you're serving one request at a time, ignore this. If you're building anything that fans out, this is the only number that matters.</p>
+
+  <h2><span class="num">05</span> The full equation</h2>
+
+  <div class="callout">
+    <div class="label">What's actually left for weights</div>
+    <div class="formula">
+      <span class="op">budget</span> = <br/>
+      &nbsp;&nbsp;total_vram <span class="op">×</span> (1 − safety)<br/>
+      &nbsp;&nbsp;<span class="op">−</span> kv_cache <span class="op">×</span> concurrency<br/>
+      &nbsp;&nbsp;<span class="op">−</span> framework_overhead
+    </div>
+  </div>
+
+  <p>That's the calculator on the homepage. It's not magic. It's not a model. It's three subtractions and one multiplication. Anyone who tells you it needs to be more complicated is selling you something.</p>
+
+  <h2><span class="num">06</span> What this site doesn't do</h2>
+
+  <p>It does not benchmark tokens-per-second. It does not predict accuracy degradation from quantization. It does not tell you which model to use. <span class="dim">There are good tools for those things. This one answers exactly one question: will the weights, the cache, and the runtime fit in your physical RAM. That's it. That's the whole product.</span></p>
+
+  <p style="margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--line); color: var(--text-dim); font-family: var(--mono); font-size: 13px;">
+    <span style="color:var(--text-faint)">// next:</span> <a href="index.html#calculator" style="color:var(--accent)">$ run the calculator →</a>
+  </p>
+
+</article>
+
+<footer>
+  <div class="container">
+    <div class="foot-bottom">
+      <span><a href="index.html">← back to homepage</a></span>
+      <span>$ uptime: 47 days · build a1f3c92 · cloudflare pages</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

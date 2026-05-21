@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>vrambudget — honest VRAM math for local LLMs</title>
+<meta name="description" content="VRAM ≈ params × (bits ÷ 8). The rest is overhead. A free, open-source budget calculator for local LLMs." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css" />
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body data-screen-label="home">
+
+<!-- ── nav ────────────────────────────────────────────────────────── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-dot"></span>
+      <span>vrambudget</span>
+      <span class="brand-slash">/</span>
+      <span class="brand-sub">v0.3.1</span>
+    </a>
+    <div class="nav-links">
+      <a href="#calculator">Calculator</a>
+      <a href="the-math.html">The math</a>
+      <a href="gpu/rtx-4090.html">GPUs</a>
+      <a href="model/llama-3-1-70b.html">Models</a>
+      <a href="#" class="nav-cta">↗ GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── hero ───────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid" id="hero-grid" data-comment-anchor="hero">
+      <!-- mounted by React so we can switch styles via Tweaks -->
+    </div>
+  </div>
+</section>
+
+<!-- ── calculator ─────────────────────────────────────────────────── -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2>Plug in your hardware. See what actually fits.</h2>
+      <div class="right">$ ./vrambudget --interactive</div>
+    </div>
+    <div id="calc-mount"></div>
+  </div>
+</section>
+
+<!-- ── the math, plainly ──────────────────────────────────────────── -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2>The math, plainly.</h2>
+      <div class="right">$ cat lib/vram.ts</div>
+    </div>
+    <div class="math-cols">
+      <div class="math-col">
+        <div class="step">01 / weights</div>
+        <h3>Weight size is the floor, not the ceiling.</h3>
+        <p>Every parameter occupies a fixed number of bits. Multiply, divide by eight, and you have gigabytes. Quantization is just a smaller multiplier. A 70B model at Q4_K_M is not magic; it is 70 × 4.5 ÷ 8.</p>
+        <pre class="code-block"><span class="c">// gigabytes of weights</span>
+<span class="k">weights</span> = <span class="v">params</span> × <span class="v">bits</span> ÷ <span class="v">8</span>
+
+<span class="c">// llama-3.1-70b @ Q4_K_M</span>
+weights = 70 × 4.5 ÷ 8
+        = <span class="v">39.4 GB</span></pre>
+      </div>
+
+      <div class="math-col">
+        <div class="step">02 / kv cache</div>
+        <h3>The KV cache is what eats your context window.</h3>
+        <p>Every token you generate writes a key and a value into every attention layer. Context length and concurrency both multiply it. This is why your 24GB card runs Llama 70B Q4 fine until you set ctx=32K and watch it OOM mid-generation.</p>
+        <pre class="code-block"><span class="c">// per-request KV bytes</span>
+<span class="k">kv</span> = 2 × <span class="v">layers</span> × <span class="v">heads</span> ×
+     <span class="v">head_dim</span> × <span class="v">ctx</span> × <span class="v">bytes</span>
+
+<span class="c">// total at runtime</span>
+total = kv × <span class="v">concurrent_requests</span></pre>
+      </div>
+
+      <div class="math-col">
+        <div class="step">03 / overhead</div>
+        <h3>Framework overhead is a constant tax.</h3>
+        <p>CUDA context, kernel workspaces, allocator slack, paged-attention buffers. Roughly 1–2 GB on a cold load, plus 3–5% of the device. It is not optional. It is not optimizable. Budget for it.</p>
+        <pre class="code-block"><span class="c">// rule of thumb</span>
+<span class="k">overhead</span> = <span class="v">1.5 GB</span> + <span class="v">total_vram</span> × <span class="v">0.04</span>
+
+<span class="c">// what's left for weights</span>
+<span class="k">budget</span> = total × (1 − safety)
+       − kv − overhead</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── why this exists ────────────────────────────────────────────── -->
+<section>
+  <div class="container why">
+    <div class="label section-label">why this exists</div>
+    <div>
+      <p>We run an MSP in Austin. Every week a client asks the same question: <span class="dim">"can my machine run this?"</span> Every benchmark site answers it with a vibes-based fit indicator and an affiliate link to a 4090. That's not a budget. That's marketing.</p>
+      <p>So we built the thing we wished existed: the math, then the models. <span class="dim">No ranking algorithm. No SEO sludge. No surprise OOMs at 3am. Plug in your hardware, see the numbers, decide for yourself.</span></p>
+      <div class="signature">
+        <span style="color:var(--text-faint)">// built by</span> <a href="https://titaniumcomputing.com">Titanium Computing</a> <span style="color:var(--text-faint)">· Austin, TX · Frontier Operations</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── footer ─────────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div class="brand" style="margin-bottom: 14px">
+          <span class="brand-dot"></span>
+          <span>vrambudget</span>
+        </div>
+        <ul>
+          <li style="text-transform:none; font-family:var(--mono); color:var(--text-dim); letter-spacing:0; font-size:11px; line-height:1.5">
+            Honest VRAM math for local LLMs.<br/>
+            MIT licensed. No telemetry. No login.
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#calculator">Calculator</a></li>
+          <li><a href="the-math.html">The math</a></li>
+          <li><a href="gpu/rtx-4090.html">GPU pages</a></li>
+          <li><a href="model/llama-3-1-70b.html">Model pages</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Source</h4>
+        <ul>
+          <li><a href="#">↗ GitHub</a></li>
+          <li><a href="#">↗ Issues</a></li>
+          <li><a href="#">↗ Changelog</a></li>
+          <li><a href="#">↗ MIT License</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Operations</h4>
+        <ul>
+          <li><a href="https://titaniumcomputing.com">↗ Titanium Computing</a></li>
+          <li><a href="#">↗ X / @vrambudget</a></li>
+          <li><a href="#">↗ Substack</a></li>
+          <li><a href="#">↗ contact@</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span><span class="mit">© 2026 Titanium Computing · MIT License</span></span>
+      <span>$ uptime: 47 days · build a1f3c92 · deployed via cloudflare pages</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ── editor-friendly tweaks defaults ────────────────────────────── -->
+<script>
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#A5C8FF",
+  "tagline": "Honest VRAM math for local LLMs.",
+  "gridLines": true,
+  "heroStyle": "question"
+}/*EDITMODE-END*/;
+</script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="calculator.jsx"></script>
+<script type="text/babel">
+function Eyebrow() {
+  return <div className="eyebrow">honest math for local llms · open source · MIT</div>;
+}
+
+function HeroCTAs() {
+  return (
+    <>
+      <div className="cta-row">
+        <a href="#calculator" className="btn btn-primary">
+          <span>Run the math</span>
+          <span className="caret">↓</span>
+        </a>
+        <a href="the-math.html" className="btn">
+          <span>Read the explainer</span>
+          <span className="caret">→</span>
+        </a>
+      </div>
+      <div className="hero-meta">
+        <span><b>~127k</b> queries answered last 30 days</span>
+        <span><b>1,420</b> models indexed</span>
+        <span><b>12</b> GPU presets</span>
+        <span><b>0</b> tracking pixels</span>
+      </div>
+    </>
+  );
+}
+
+const FORMULA = (
+  <>VRAM <span className="approx">≈</span> params <span className="op">×</span> (bits <span className="op">÷</span> 8)</>
+);
+
+function HeroQuestion({ tagline }) {
+  return (
+    <>
+      <Eyebrow />
+      <h1 className="hero-headline">
+        What LLM fits<br/>my hardware<span className="q-mark">?</span>
+      </h1>
+      <div className="hero-answer-row">
+        <span className="arrow">$ answer ↓</span>
+        <span>the math, in one line</span>
+      </div>
+      <p className="hero-formula">{FORMULA}</p>
+      <p className="hero-sub">
+        {tagline} <span className="dim">KV cache, activations, framework overhead, and concurrency are what actually crash your runs. This site makes that visible.</span>
+      </p>
+      <HeroCTAs />
+    </>
+  );
+}
+
+function HeroTagline({ tagline }) {
+  return (
+    <>
+      <Eyebrow />
+      <h1 className="hero-headline">{tagline}</h1>
+      <p className="hero-formula">{FORMULA}</p>
+      <p className="hero-sub">
+        <span className="dim">Most tools list models and call it done. This one shows the math, then lists the models. KV cache, framework overhead, and concurrency are what actually crash your runs.</span>
+      </p>
+      <HeroCTAs />
+    </>
+  );
+}
+
+function HeroFormula({ tagline }) {
+  return (
+    <>
+      <Eyebrow />
+      <p className="hero-formula xl">{FORMULA}</p>
+      <p className="hero-sub">
+        <b style={{color:'var(--text)'}}>{tagline}</b>{' '}
+        <span className="dim">Most tools list models and call it done. This one shows the math, then lists the models.</span>
+      </p>
+      <HeroCTAs />
+    </>
+  );
+}
+
+function HeroSwitch({ style, tagline }) {
+  if (style === 'tagline')  return <HeroTagline tagline={tagline} />;
+  if (style === 'formula')  return <HeroFormula tagline={tagline} />;
+  return <HeroQuestion tagline={tagline} />;
+}
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  // apply tweaks via CSS vars
+  React.useEffect(() => {
+    document.documentElement.style.setProperty('--accent', t.accent);
+    const hex = t.accent.replace('#', '');
+    const r = parseInt(hex.substring(0,2), 16);
+    const g = parseInt(hex.substring(2,4), 16);
+    const b = parseInt(hex.substring(4,6), 16);
+    document.documentElement.style.setProperty('--accent-soft', `rgba(${r},${g},${b},0.12)`);
+    document.documentElement.style.setProperty('--accent-line', `rgba(${r},${g},${b},0.35)`);
+    document.body.style.backgroundImage = t.gridLines
+      ? 'linear-gradient(to right, rgba(255,255,255,0.018) 1px, transparent 1px)'
+      : 'none';
+  }, [t.accent, t.gridLines]);
+
+  const heroEl = document.getElementById('hero-grid');
+
+  return (
+    <>
+      {heroEl && ReactDOM.createPortal(
+        <HeroSwitch style={t.heroStyle} tagline={t.tagline} />,
+        heroEl
+      )}
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Hero" />
+        <TweakRadio
+          label="Hero style"
+          value={t.heroStyle}
+          options={['question', 'tagline', 'formula']}
+          onChange={(v) => setTweak('heroStyle', v)}
+        />
+        <TweakSelect
+          label="Tagline"
+          value={t.tagline}
+          options={[
+            'Honest VRAM math for local LLMs.',
+            'What LLM fits my hardware?',
+            'VRAM ≈ params × (bits ÷ 8). The rest is overhead.',
+            'Stop guessing. Start budgeting.',
+          ]}
+          onChange={(v) => setTweak('tagline', v)}
+        />
+        <TweakSection label="Aesthetic" />
+        <TweakColor
+          label="Accent"
+          value={t.accent}
+          options={['#FFA947', '#FFD24A', '#7CFFCB', '#A5C8FF', '#FF6A57', '#E8E6E1']}
+          onChange={(v) => setTweak('accent', v)}
+        />
+        <TweakToggle
+          label="12-col background grid"
+          value={t.gridLines}
+          onChange={(v) => setTweak('gridLines', v)}
+        />
+      </TweaksPanel>
+    </>
+  );
+}
+
+// mount calculator (independent of tweaks)
+const calcRoot = ReactDOM.createRoot(document.getElementById('calc-mount'));
+calcRoot.render(<Calculator initialGpu="rtx-4090" />);
+
+// mount App (renders hero via portal + tweaks panel)
+const appMount = document.createElement('div');
+document.body.appendChild(appMount);
+ReactDOM.createRoot(appMount).render(<App />);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>RTX 4060 · 8 GB — vrambudget</title>
+<meta name="description" content="What an RTX 4060 can comfortably run. 8GB Ada. Modern silicon, weak VRAM. 7B at Q5 and call it done." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body data-screen-label="gpu-rtx-4060">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="brand">
+      <span class="brand-dot"></span>
+      <span>vrambudget</span>
+      <span class="brand-slash">/</span>
+      <span class="brand-sub">v0.3.1</span>
+    </a>
+    <div class="nav-links">
+      <a href="../index.html#calculator">Calculator</a>
+      <a href="../the-math.html">The math</a>
+      <a href="../gpu/rtx-4090.html" class="active">GPUs</a>
+      <a href="../model/llama-3-1-70b.html" class="">Models</a>
+      <a href="#" class="nav-cta">↗ GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<section class="detail-hero">
+  <div class="container">
+    <div class="crumb">
+      <a href="../index.html">~</a><span class="sep">/</span>
+      <a href="../index.html#calculator">gpu</a><span class="sep">/</span>
+      <span style="color:var(--text)">rtx-4060</span>
+    </div>
+    <h1>RTX 4060 <span class="accent">8<span style="font-size:0.55em">GB</span></span></h1>
+    <p class="summary">8GB Ada. Modern silicon, weak VRAM. 7B at Q5 and call it done.</p>
+    <div class="detail-stats">
+      <div class="detail-stat"><div class="k">VRAM</div><div class="v tnum">8<span class="unit">GB</span></div></div>
+      <div class="detail-stat"><div class="k">Bandwidth</div><div class="v tnum">272<span class="unit">GB/s</span></div></div>
+      <div class="detail-stat"><div class="k">FP16 compute</div><div class="v tnum">121<span class="unit">TFLOPS</span></div></div>
+      <div class="detail-stat"><div class="k">Budget @ ctx 8K</div><div class="v tnum">5.1<span class="unit">GB</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2>Tuned to this card.</h2>
+      <div class="right">$ ./vrambudget --gpu rtx-4060</div>
+    </div>
+    <div id="calc-mount"></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2>Models that fit on a RTX 4060.</h2>
+      <div class="right">$ grep "fits" models.json | head -12</div>
+    </div>
+    <div class="fit-table">
+      <div class="head">
+        <span>Model</span>
+        <span style="text-align:right">Params</span>
+        <span>Best quant</span>
+        <span>Weights / 5.1 GB budget</span>
+        <span style="text-align:right">Fit</span>
+      </div>
+      <a href="../model/llama-3-1-8b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Llama 3.1 8B</span>
+          <span class="params">8B</span>
+          <span class="quant">Q4_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:88.58267716535433%; background:var(--accent)"></div></span><span class="mini-pct">4.5</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/granite-8b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Granite 8B Code</span>
+          <span class="params">8B</span>
+          <span class="quant">Q4_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:88.58267716535433%; background:var(--accent)"></div></span><span class="mini-pct">4.5</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/phi-3-mini.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Phi-3 Mini</span>
+          <span class="params">3.8B</span>
+          <span class="quant">FP8</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:74.80314960629921%; background:var(--accent)"></div></span><span class="mini-pct">3.8</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/gemma-2-9b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Gemma 2 9B</span>
+          <span class="params">9B</span>
+          <span class="quant">Q4_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:99.65551181102363%; background:var(--yellow)"></div></span><span class="mini-pct">5.1</span></span>
+          <span class="badge-cell"><span class="pill tight">tight</span></span>
+        </a>
+      <a href="../model/mistral-7b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Mistral 7B v0.3</span>
+          <span class="params">7.2B</span>
+          <span class="quant">Q5_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:97.44094488188976%; background:var(--yellow)"></div></span><span class="mini-pct">5.0</span></span>
+          <span class="badge-cell"><span class="pill tight">tight</span></span>
+        </a>
+      <a href="../model/qwen-2-5-7b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Qwen 2.5 7B</span>
+          <span class="params">7B</span>
+          <span class="quant">Q5_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:94.73425196850394%; background:var(--yellow)"></div></span><span class="mini-pct">4.8</span></span>
+          <span class="badge-cell"><span class="pill tight">tight</span></span>
+        </a>
+      <a href="../model/wizardlm-2-7b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">WizardLM 2 7B</span>
+          <span class="params">7B</span>
+          <span class="quant">Q5_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:94.73425196850394%; background:var(--yellow)"></div></span><span class="mini-pct">4.8</span></span>
+          <span class="badge-cell"><span class="pill tight">tight</span></span>
+        </a>
+      <a href="../model/llama-3-1-405b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Llama 3.1 405B</span>
+          <span class="params">405B</span>
+          <span class="quant">Q4_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:100%; background:var(--red)"></div></span><span class="mini-pct">228</span></span>
+          <span class="badge-cell"><span class="pill over">over</span></span>
+        </a>
+      <a href="../model/deepseek-v2-5.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">DeepSeek-V2.5</span>
+          <span class="params">236B</span>
+          <span class="quant">Q4_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:100%; background:var(--red)"></div></span><span class="mini-pct">133</span></span>
+          <span class="badge-cell"><span class="pill over">over</span></span>
+        </a>
+      <a href="../model/mixtral-8x22b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Mixtral 8x22B</span>
+          <span class="params">141B</span>
+          <span class="quant">Q4_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:100%; background:var(--red)"></div></span><span class="mini-pct">79</span></span>
+          <span class="badge-cell"><span class="pill over">over</span></span>
+        </a>
+      <a href="../model/command-r-plus.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Command R+</span>
+          <span class="params">104B</span>
+          <span class="quant">Q4_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:100%; background:var(--red)"></div></span><span class="mini-pct">59</span></span>
+          <span class="badge-cell"><span class="pill over">over</span></span>
+        </a>
+      <a href="../model/qwen-2-5-72b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Qwen 2.5 72B</span>
+          <span class="params">72B</span>
+          <span class="quant">Q4_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:100%; background:var(--red)"></div></span><span class="mini-pct">41</span></span>
+          <span class="badge-cell"><span class="pill over">over</span></span>
+        </a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head"><h2>Compare to…</h2><div class="right">$ ./vrambudget --compare</div></div>
+    <div class="compare">
+      <a href="rtx-3080.html" class="compare-card">
+        <span class="arrow">step up →</span>
+        <span class="name">RTX 3080</span>
+        <span class="v tnum">10<span class="unit">GB</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">Ampere</span>
+      </a>
+      <a href="rtx-3060.html" class="compare-card">
+        <span class="arrow">step up →</span>
+        <span class="name">RTX 3060 12GB</span>
+        <span class="v tnum">12<span class="unit">GB</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">Ampere</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-bottom">
+      <span><a href="../index.html">← back to homepage</a></span>
+      <span>$ /gpu/rtx-4060 · last built 2026-05-20</span>
+    </div>
+  </div>
+</footer>
+
+<script type="text/babel" src="../calculator.jsx"></script>
+<script type="text/babel">
+const calcRoot = ReactDOM.createRoot(document.getElementById('calc-mount'));
+calcRoot.render(<Calculator initialGpu="rtx-4060" />);
+</script>
+</body>
+</html>

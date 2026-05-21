@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>RTX 6000 Ada · 48 GB — vrambudget</title>
+<meta name="description" content="What an RTX 6000 Ada can comfortably run. Same 48GB, modern silicon. Faster than A6000 across the board." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body data-screen-label="gpu-rtx-6000-ada">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="brand">
+      <span class="brand-dot"></span>
+      <span>vrambudget</span>
+      <span class="brand-slash">/</span>
+      <span class="brand-sub">v0.3.1</span>
+    </a>
+    <div class="nav-links">
+      <a href="../index.html#calculator">Calculator</a>
+      <a href="../the-math.html">The math</a>
+      <a href="../gpu/rtx-4090.html" class="active">GPUs</a>
+      <a href="../model/llama-3-1-70b.html" class="">Models</a>
+      <a href="#" class="nav-cta">↗ GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<section class="detail-hero">
+  <div class="container">
+    <div class="crumb">
+      <a href="../index.html">~</a><span class="sep">/</span>
+      <a href="../index.html#calculator">gpu</a><span class="sep">/</span>
+      <span style="color:var(--text)">rtx-6000-ada</span>
+    </div>
+    <h1>RTX 6000 Ada <span class="accent">48<span style="font-size:0.55em">GB</span></span></h1>
+    <p class="summary">Same 48GB, modern silicon. Faster than A6000 across the board.</p>
+    <div class="detail-stats">
+      <div class="detail-stat"><div class="k">VRAM</div><div class="v tnum">48<span class="unit">GB</span></div></div>
+      <div class="detail-stat"><div class="k">Bandwidth</div><div class="v tnum">960<span class="unit">GB/s</span></div></div>
+      <div class="detail-stat"><div class="k">FP16 compute</div><div class="v tnum">364<span class="unit">TFLOPS</span></div></div>
+      <div class="detail-stat"><div class="k">Budget @ ctx 8K</div><div class="v tnum">37<span class="unit">GB</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2>Tuned to this card.</h2>
+      <div class="right">$ ./vrambudget --gpu rtx-6000-ada</div>
+    </div>
+    <div id="calc-mount"></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2>Models that fit on a RTX 6000 Ada.</h2>
+      <div class="right">$ grep "fits" models.json | head -12</div>
+    </div>
+    <div class="fit-table">
+      <div class="head">
+        <span>Model</span>
+        <span style="text-align:right">Params</span>
+        <span>Best quant</span>
+        <span>Weights / 37 GB budget</span>
+        <span style="text-align:right">Fit</span>
+      </div>
+      <a href="../model/qwen-2-5-72b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Qwen 2.5 72B</span>
+          <span class="params">72B</span>
+          <span class="quant">Q3_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:84.04482390608325%; background:var(--accent)"></div></span><span class="mini-pct">32</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/llama-3-1-70b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Llama 3.1 70B</span>
+          <span class="params">70B</span>
+          <span class="quant">Q3_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:81.7102454642476%; background:var(--accent)"></div></span><span class="mini-pct">31</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/mixtral-8x7b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Mixtral 8x7B</span>
+          <span class="params">46.7B</span>
+          <span class="quant">Q5_K_M</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:85.66235325506939%; background:var(--accent)"></div></span><span class="mini-pct">32</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/deepseek-coder-33b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">DeepSeek Coder 33B</span>
+          <span class="params">33B</span>
+          <span class="quant">FP8</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:88.0469583778015%; background:var(--accent)"></div></span><span class="mini-pct">33</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/qwen-2-5-32b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Qwen 2.5 32B</span>
+          <span class="params">32B</span>
+          <span class="quant">FP8</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:85.37886872998934%; background:var(--accent)"></div></span><span class="mini-pct">32</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/gemma-2-27b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Gemma 2 27B</span>
+          <span class="params">27B</span>
+          <span class="quant">FP8</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:72.0384204909285%; background:var(--accent)"></div></span><span class="mini-pct">27</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/starcoder2-15b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">StarCoder2 15B</span>
+          <span class="params">15B</span>
+          <span class="quant">FP16</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:80.042689434365%; background:var(--accent)"></div></span><span class="mini-pct">30</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/phi-3-medium.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Phi-3 Medium</span>
+          <span class="params">14B</span>
+          <span class="quant">FP16</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:74.70651013874067%; background:var(--accent)"></div></span><span class="mini-pct">28</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/gemma-2-9b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Gemma 2 9B</span>
+          <span class="params">9B</span>
+          <span class="quant">FP16</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:48.025613660619%; background:var(--accent)"></div></span><span class="mini-pct">18</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/llama-3-1-8b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Llama 3.1 8B</span>
+          <span class="params">8B</span>
+          <span class="quant">FP16</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:42.68943436499467%; background:var(--accent)"></div></span><span class="mini-pct">16</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/granite-8b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Granite 8B Code</span>
+          <span class="params">8B</span>
+          <span class="quant">FP16</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:42.68943436499467%; background:var(--accent)"></div></span><span class="mini-pct">16</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+      <a href="../model/mistral-7b.html" class="fit-row" style="color:inherit;text-decoration:none">
+          <span class="name">Mistral 7B v0.3</span>
+          <span class="params">7.2B</span>
+          <span class="quant">FP16</span>
+          <span class="bar-cell"><span class="mini-bar"><div style="width:38.4204909284952%; background:var(--accent)"></div></span><span class="mini-pct">14</span></span>
+          <span class="badge-cell"><span class="pill fits">fits</span></span>
+        </a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head"><h2>Compare to…</h2><div class="right">$ ./vrambudget --compare</div></div>
+    <div class="compare">
+      <a href="rtx-3090.html" class="compare-card">
+        <span class="arrow">← step down</span>
+        <span class="name">RTX 3090</span>
+        <span class="v tnum">24<span class="unit">GB</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">Ampere</span>
+      </a>
+      <a href="rtx-5090.html" class="compare-card">
+        <span class="arrow">← step down</span>
+        <span class="name">RTX 5090</span>
+        <span class="v tnum">32<span class="unit">GB</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">Blackwell · flagship</span>
+      </a>
+      <a href="m2-max-64.html" class="compare-card">
+        <span class="arrow">step up →</span>
+        <span class="name">M2 Max 64</span>
+        <span class="v tnum">64<span class="unit">GB</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">Apple Silicon</span>
+      </a>
+      <a href="m3-max-64.html" class="compare-card">
+        <span class="arrow">step up →</span>
+        <span class="name">M3 Max 64</span>
+        <span class="v tnum">64<span class="unit">GB</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">Apple Silicon</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-bottom">
+      <span><a href="../index.html">← back to homepage</a></span>
+      <span>$ /gpu/rtx-6000-ada · last built 2026-05-20</span>
+    </div>
+  </div>
+</footer>
+
+<script type="text/babel" src="../calculator.jsx"></script>
+<script type="text/babel">
+const calcRoot = ReactDOM.createRoot(document.getElementById('calc-mount'));
+calcRoot.render(<Calculator initialGpu="rtx-6000-ada" />);
+</script>
+</body>
+</html>

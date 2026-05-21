@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Llama 3.1 405B · 405B params — vrambudget</title>
+<meta name="description" content="What you need to run Llama 3.1 405B. The big one. Q4 needs ~200GB. Single-GPU options exist (MI300X, B200) but rare." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css" />
+</head>
+<body data-screen-label="model-llama-3-1-405b">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="brand">
+      <span class="brand-dot"></span>
+      <span>vrambudget</span>
+      <span class="brand-slash">/</span>
+      <span class="brand-sub">v0.3.1</span>
+    </a>
+    <div class="nav-links">
+      <a href="../index.html#calculator">Calculator</a>
+      <a href="../the-math.html">The math</a>
+      <a href="../gpu/rtx-4090.html" class="">GPUs</a>
+      <a href="../model/llama-3-1-70b.html" class="active">Models</a>
+      <a href="#" class="nav-cta">↗ GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<section class="detail-hero">
+  <div class="container">
+    <div class="crumb">
+      <a href="../index.html">~</a><span class="sep">/</span>
+      <a href="../index.html#calculator">model</a><span class="sep">/</span>
+      <span style="color:var(--text)">meta-llama/Llama-3.1-405B-Instruct</span>
+    </div>
+    <h1>Llama 3.1 405B</h1>
+    <p class="summary">The big one. Q4 needs ~200GB. Single-GPU options exist (MI300X, B200) but rare.</p>
+    <div class="detail-stats">
+      <div class="detail-stat"><div class="k">Parameters</div><div class="v tnum">405<span class="unit">B</span></div></div>
+      <div class="detail-stat"><div class="k">Family</div><div class="v">Meta</div></div>
+      <div class="detail-stat"><div class="k">Context</div><div class="v tnum">128<span class="unit">K tokens</span></div></div>
+      <div class="detail-stat"><div class="k">FP16 weights</div><div class="v tnum">810<span class="unit">GB</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2>What you need to run this.</h2>
+      <div class="right">$ ./vrambudget --model llama-3-1-405b --by quant</div>
+    </div>
+    <div class="gpu-recs">
+      
+      <div class="rec-col">
+        <div class="head">
+          <span class="q">FP16</span>
+          <span class="sz tnum">810 GB</span>
+        </div>
+        <a href="../gpu/m3-ultra-512.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">M3 Ultra 512</span>
+            <span class="gsize" style="color:var(--red)">512 GB · over budget</span>
+          </a>
+        <a href="../gpu/m2-ultra-192.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">M2 Ultra 192</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/b200.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">B200</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/mi300x.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">MI300X</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+      </div>
+      
+      <div class="rec-col">
+        <div class="head">
+          <span class="q">Q8_0</span>
+          <span class="sz tnum">430 GB</span>
+        </div>
+        <a href="../gpu/m3-ultra-512.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">M3 Ultra 512</span>
+            <span class="gsize" style="color:var(--red)">512 GB · over budget</span>
+          </a>
+        <a href="../gpu/m2-ultra-192.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">M2 Ultra 192</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/b200.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">B200</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/mi300x.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">MI300X</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+      </div>
+      
+      <div class="rec-col">
+        <div class="head">
+          <span class="q">Q6_K</span>
+          <span class="sz tnum">329 GB</span>
+        </div>
+        <a href="../gpu/m3-ultra-512.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname">M3 Ultra 512</span>
+            <span class="gsize">512 GB · fits</span>
+          </a>
+        <a href="../gpu/m2-ultra-192.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">M2 Ultra 192</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/b200.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">B200</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/mi300x.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">MI300X</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+      </div>
+      
+      <div class="rec-col">
+        <div class="head">
+          <span class="q">Q5_K_M</span>
+          <span class="sz tnum">278 GB</span>
+        </div>
+        <a href="../gpu/m3-ultra-512.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname">M3 Ultra 512</span>
+            <span class="gsize">512 GB · fits</span>
+          </a>
+        <a href="../gpu/m2-ultra-192.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">M2 Ultra 192</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/b200.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">B200</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/mi300x.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">MI300X</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+      </div>
+      
+      <div class="rec-col">
+        <div class="head">
+          <span class="q">Q4_K_M</span>
+          <span class="sz tnum">228 GB</span>
+        </div>
+        <a href="../gpu/m3-ultra-512.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname">M3 Ultra 512</span>
+            <span class="gsize">512 GB · fits</span>
+          </a>
+        <a href="../gpu/m2-ultra-192.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">M2 Ultra 192</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/b200.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">B200</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+        <a href="../gpu/mi300x.html" class="gpu-pick" style="color:inherit;text-decoration:none">
+            <span class="gname" style="color:var(--text-faint)">MI300X</span>
+            <span class="gsize" style="color:var(--red)">192 GB · over budget</span>
+          </a>
+      </div>
+    </div>
+    <p style="font-family:var(--mono); font-size:12px; color:var(--text-faint); margin: 0 0 80px; text-transform: uppercase; letter-spacing: 0.06em;">
+      // budgets shown at ctx 8K, concurrency 1, 15% safety headroom. <a href="../index.html#calculator" style="color:var(--accent)">Tune in the calculator →</a>
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head"><h2>Alternatives at this size.</h2><div class="right">$ grep --params similar catalog.json</div></div>
+    <div class="compare">
+      <a href="deepseek-v2-5.html" class="compare-card">
+        <span class="arrow">$ similar</span>
+        <span class="name">DeepSeek-V2.5</span>
+        <span class="v tnum">236<span class="unit">B</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">DeepSeek</span>
+      </a>
+      <a href="mixtral-8x22b.html" class="compare-card">
+        <span class="arrow">$ similar</span>
+        <span class="name">Mixtral 8x22B</span>
+        <span class="v tnum">141<span class="unit">B</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">Mistral</span>
+      </a>
+      <a href="command-r-plus.html" class="compare-card">
+        <span class="arrow">$ similar</span>
+        <span class="name">Command R+</span>
+        <span class="v tnum">104<span class="unit">B</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">Cohere</span>
+      </a>
+      <a href="qwen-2-5-72b.html" class="compare-card">
+        <span class="arrow">$ similar</span>
+        <span class="name">Qwen 2.5 72B</span>
+        <span class="v tnum">72<span class="unit">B</span></span>
+        <span style="font-family:var(--mono); font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em">Alibaba</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-bottom">
+      <span><a href="../index.html">← back to homepage</a></span>
+      <span>$ /model/llama-3-1-405b · last built 2026-05-20</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

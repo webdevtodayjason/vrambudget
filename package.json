@@ -1,0 +1,30 @@
+{
+  "name": "vrambudget",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "prebuild": "echo 'prebuild placeholder: HF enrichment slot (S3 will wire this)'",
+    "postbuild": "tsx scripts/emit-agent-views.ts"
+  },
+  "dependencies": {
+    "@frontier-infra/avl": "0.1.0",
+    "next": "^15.0.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^15.0.0",
+    "tsx": "^4.22.3",
+    "typescript": "^5.4.0"
+  }
+}
