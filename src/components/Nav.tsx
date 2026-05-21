@@ -5,8 +5,6 @@ type NavActive = 'calculator' | 'math' | 'gpus' | 'models' | null;
 export type NavProps = { active?: NavActive };
 
 const GITHUB_URL = 'https://github.com/webdevtodayjason/vrambudget';
-const DEFAULT_GPU_HREF = '/gpu/rtx-4090';
-const DEFAULT_MODEL_HREF = '/model/llama-3-1-70b';
 
 export default function Nav({ active = null }: NavProps) {
   const cls = (key: Exclude<NavActive, null>) =>
@@ -28,10 +26,10 @@ export default function Nav({ active = null }: NavProps) {
           <Link href="/the-math" className={cls('math')}>
             The math
           </Link>
-          <Link href={DEFAULT_GPU_HREF} className={cls('gpus')}>
+          <Link href="/gpu/" className={cls('gpus')}>
             GPUs
           </Link>
-          <Link href={DEFAULT_MODEL_HREF} className={cls('models')}>
+          <Link href="/model/" className={cls('models')}>
             Models
           </Link>
           <a

@@ -125,7 +125,7 @@ export default async function ModelDetailPage({
           <div className="crumb">
             <Link href="/">~</Link>
             <span className="sep">/</span>
-            <Link href="/#calculator">model</Link>
+            <Link href="/model/">model</Link>
             <span className="sep">/</span>
             <span style={{ color: 'var(--text)' }}>{m.hfRepo}</span>
           </div>

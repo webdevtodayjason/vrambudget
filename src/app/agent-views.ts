@@ -8,10 +8,14 @@
  */
 import { registerHomeView } from './_views/home';
 import { registerMathView } from './_views/math';
+import { registerGpuIndexView } from './_views/gpu-index';
+import { registerModelIndexView } from './_views/model-index';
 import { registerAllGpuViews } from './_views/all-gpus';
 import { registerAllModelViews } from './_views/all-models';
 
 registerHomeView();
 registerMathView();
+registerGpuIndexView();
+registerModelIndexView();
 registerAllGpuViews();
 registerAllModelViews();

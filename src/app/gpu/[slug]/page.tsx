@@ -108,7 +108,7 @@ export default async function GpuDetailPage({
           <div className="crumb">
             <Link href="/">~</Link>
             <span className="sep">/</span>
-            <Link href="/#calculator">gpu</Link>
+            <Link href="/gpu/">gpu</Link>
             <span className="sep">/</span>
             <span style={{ color: 'var(--text)' }}>{gpu.slug}</span>
           </div>
