@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "serve out -l tcp://0.0.0.0:${PORT:-3000}",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "prebuild": "echo 'prebuild placeholder: HF enrichment slot (S3 will wire this)'",
@@ -16,7 +16,8 @@
     "@frontier-infra/avl": "0.1.0",
     "next": "^15.0.0",
     "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react-dom": "^18.3.0",
+    "serve": "^14"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
