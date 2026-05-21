@@ -1,8 +1,31 @@
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import GiscusComments from '@/components/GiscusComments';
+import { termBySlug } from '@/lib/glossary';
+
+// Inline glossary link. Renders as the term with a dotted underline +
+// the term's one-liner as a native browser tooltip. Reader scans the
+// article; on a word they're unsure about, the tooltip explains; clicking
+// jumps to the full definition on /glossary.
+function G({ slug, children }: { slug: string; children: ReactNode }) {
+  const term = termBySlug(slug);
+  return (
+    <Link
+      href={`/glossary#${slug}`}
+      title={term?.oneLiner}
+      style={{
+        color: 'inherit',
+        borderBottom: '1px dotted var(--text-faint)',
+        textDecoration: 'none',
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
 
 export const metadata: Metadata = {
   title: 'The math, plainly',
@@ -33,11 +56,13 @@ export default function TheMathPage() {
         </p>
 
         <p>
-          Every parameter in a transformer occupies a fixed number of bits in
-          memory. Multiply them. Divide by eight. The result is gigabytes.
-          That&apos;s the entire foundation. Every other line item — KV cache,
-          activations, framework overhead, allocator slack — is just adding to
-          a number you already had.
+          Every <G slug="parameters">parameter</G> in a transformer occupies a
+          fixed number of bits in memory. Multiply them. Divide by eight. The
+          result is gigabytes. That&apos;s the entire foundation. Every other
+          line item — <G slug="kv-cache">KV cache</G>,{' '}
+          <G slug="activations">activations</G>,{' '}
+          <G slug="framework-overhead">framework overhead</G>, allocator slack —
+          is just adding to a number you already had.
         </p>
 
         <div className="callout">
@@ -70,10 +95,11 @@ export default function TheMathPage() {
         </p>
 
         <p>
-          Quantization formats like Q4_K_M or AWQ are not exactly 4 bits per
-          parameter — they carry small metadata overheads — but the rule of
-          thumb (params × bits ÷ 8) is accurate to within a few percent. Treat
-          it as gospel for napkin math and you&apos;ll be fine.
+          <G slug="quantization">Quantization</G> formats like Q4_K_M or{' '}
+          <G slug="awq">AWQ</G> are not exactly 4 bits per parameter — they
+          carry small metadata overheads — but the rule of thumb (params × bits
+          ÷ 8) is accurate to within a few percent. Treat it as gospel for
+          napkin math and you&apos;ll be fine.
         </p>
 
         <div className="callout">
@@ -94,13 +120,15 @@ export default function TheMathPage() {
         <p>
           Every token your model generates writes a key and a value into every
           attention layer. These accumulate. At ctx=2K nobody notices. At
-          ctx=32K with concurrency 4, the KV cache{' '}
+          ctx=32K with <G slug="concurrency">concurrency</G> 4, the KV cache{' '}
           <span className="dim">eats more VRAM than the weights</span>.
         </p>
 
         <p>
           The exact formula depends on the architecture (layers × heads × head
-          dimension), but the practical version is:{' '}
+          dimension; modern open models use{' '}
+          <G slug="gqa">GQA</G> which cuts KV by 30-60%), but the practical
+          version is:{' '}
           <span className="dim">
             budget 1–4 GB of KV per concurrent request at long context, on a
             70B-class model. More for larger models, less for smaller.
@@ -117,7 +145,7 @@ export default function TheMathPage() {
         <p>
           This is the single most under-counted line item in every &quot;fit
           check&quot; tool on the internet. If your tool doesn&apos;t ask you
-          for context length, throw it out.
+          for <G slug="context-window">context length</G>, throw it out.
         </p>
 
         <h2>
@@ -125,9 +153,10 @@ export default function TheMathPage() {
         </h2>
 
         <p>
-          CUDA context, kernel workspaces, paged-attention buffers, allocator
-          fragmentation, the runtime itself. None of this shows up in the model
-          card. All of it is real.
+          CUDA context, kernel workspaces,{' '}
+          <G slug="paged-attention">paged-attention</G> buffers, allocator
+          fragmentation, the runtime itself. None of this shows up in the
+          model card. All of it is real.
         </p>
 
         <p>
@@ -151,7 +180,8 @@ export default function TheMathPage() {
           </p>
           <ul>
             <li>
-              <span className="pct">-3.6 GB</span> safety headroom (15% of 24)
+              <span className="pct">-3.6 GB</span>{' '}
+              <G slug="safety-headroom">safety headroom</G> (15% of 24)
             </li>
             <li>
               <span className="pct">-2.2 GB</span> framework overhead (1.5 + 4%
@@ -177,6 +207,8 @@ export default function TheMathPage() {
           <span className="dim">
             This is why production inference servers run smaller models than
             your local llama.cpp setup — they need the headroom for batching.
+            See <G slug="continuous-batching">continuous batching</G> for how
+            vLLM and oMLX claw it back.
           </span>
         </p>
 
@@ -215,14 +247,46 @@ export default function TheMathPage() {
         </h2>
 
         <p>
-          It does not benchmark tokens-per-second. It does not predict accuracy
-          degradation from quantization. It does not tell you which model to
-          use.{' '}
+          It does not benchmark{' '}
+          <G slug="tokens-per-second">tokens-per-second</G>. It does not
+          predict accuracy degradation from quantization. It does not tell you
+          which model to use.{' '}
           <span className="dim">
             There are good tools for those things. This one answers exactly
             one question: will the weights, the cache, and the runtime fit in
             your physical RAM. That&apos;s it. That&apos;s the whole product.
           </span>
+        </p>
+
+        <p
+          style={{
+            marginTop: 32,
+            padding: '16px 20px',
+            border: '1px solid var(--line)',
+            backgroundColor: 'var(--bg-elev)',
+            fontSize: 14,
+            color: 'var(--text-dim)',
+            lineHeight: 1.55,
+          }}
+        >
+          <span
+            style={{
+              color: 'var(--accent)',
+              fontFamily: 'var(--mono)',
+              fontSize: 11,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              marginRight: 10,
+            }}
+          >
+            {'// '}new to the terms?
+          </span>
+          Every dotted word above links to a full definition on{' '}
+          <Link href="/glossary" style={{ color: 'var(--accent)' }}>
+            /glossary
+          </Link>
+          . Open it in another tab and skim the index; the whole vocabulary
+          of local inference is roughly 23 terms.
         </p>
 
         <p
