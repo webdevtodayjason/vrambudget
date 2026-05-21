@@ -86,8 +86,22 @@ export default function ModelIndexPage() {
         </div>
       </section>
 
+      <section className="quick-jump">
+        <div className="container">
+          <div className="quick-jump-strip" role="navigation" aria-label="Jump to model family">
+            <span className="quick-jump-label">{'// '}jump to</span>
+            {groups.map(({ family, models }) => (
+              <a key={family} href={`#family-${family.replace(/[^a-zA-Z0-9]/g, '-')}`} className="quick-jump-chip">
+                {family}
+                <span className="quick-jump-count">{models.length}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {groups.map(({ family, models }) => (
-        <section key={family}>
+        <section key={family} id={`family-${family.replace(/[^a-zA-Z0-9]/g, '-')}`} style={{ scrollMarginTop: 80 }}>
           <div className="container">
             <div className="section-head">
               <h2>{family}</h2>

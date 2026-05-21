@@ -72,8 +72,22 @@ export default function RuntimeIndexPage() {
         </div>
       </section>
 
+      <section className="quick-jump">
+        <div className="container">
+          <div className="quick-jump-strip" role="navigation" aria-label="Jump to runtime family">
+            <span className="quick-jump-label">{'// '}jump to</span>
+            {groups.map(({ family, runtimes }) => (
+              <a key={family.id} href={`#family-${family.id}`} className="quick-jump-chip">
+                {family.label}
+                <span className="quick-jump-count">{runtimes.length}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {groups.map(({ family, runtimes }) => (
-        <section key={family.id}>
+        <section key={family.id} id={`family-${family.id}`} style={{ scrollMarginTop: 80 }}>
           <div className="container">
             <div className="section-head">
               <h2>{family.label}</h2>

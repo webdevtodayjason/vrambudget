@@ -72,8 +72,22 @@ export default function GpuIndexPage() {
         </div>
       </section>
 
+      <section className="quick-jump">
+        <div className="container">
+          <div className="quick-jump-strip" role="navigation" aria-label="Jump to GPU family">
+            <span className="quick-jump-label">{'// '}jump to</span>
+            {groups.map(({ cat, gpus }) => (
+              <a key={cat.id} href={`#family-${cat.id}`} className="quick-jump-chip">
+                {cat.label}
+                <span className="quick-jump-count">{gpus.length}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {groups.map(({ cat, gpus }) => (
-        <section key={cat.id}>
+        <section key={cat.id} id={`family-${cat.id}`} style={{ scrollMarginTop: 80 }}>
           <div className="container">
             <div className="section-head">
               <h2>{cat.label}</h2>

@@ -1255,6 +1255,71 @@ footer {
 
 /* ── mobile-first responsive overrides ────────────────────────────── */
 
+/* ── quick-jump anchor strip (used on /gpu/, /model/, /runtime/) ──── */
+
+.quick-jump {
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.quick-jump .container { padding-top: 16px; padding-bottom: 16px; }
+.quick-jump-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.quick-jump-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 4px;
+}
+.quick-jump-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-strong);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 80ms linear, color 80ms linear;
+}
+.quick-jump-chip:hover {
+  color: var(--accent);
+  border-color: var(--accent-line);
+}
+.quick-jump-count {
+  font-size: 10px;
+  color: var(--text-faint);
+  font-feature-settings: "tnum";
+}
+.quick-jump-chip:hover .quick-jump-count { color: var(--accent); opacity: 0.7; }
+
+@media (max-width: 720px) {
+  .quick-jump-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Negative margin lets the chips bleed to viewport edges */
+    margin-left: -18px;
+    margin-right: -18px;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .quick-jump-label { flex: 0 0 auto; }
+  .quick-jump-chip { flex: 0 0 auto; }
+  /* Hide the scrollbar on the chip strip — feel native */
+  .quick-jump-strip::-webkit-scrollbar { display: none; }
+  .quick-jump-strip { scrollbar-width: none; }
+}
+
 /* ── iOS Safari + cross-browser hardening ─────────────────────────── */
 
 /* backdrop-filter vendor prefix for older Safari */
@@ -1408,8 +1473,23 @@ a, button {
   .tile .num { font-size: 22px; }
   .tile:nth-child(2n) { border-right: 0; }
 
-  /* GPU category strip — wrap, smaller padding */
-  .gpu-cat { flex: 1 1 140px; padding: 10px 12px; }
+  /* GPU category strip — horizontal scroll on mobile (was wrapping to 4 rows of 2).
+     8 family chips swipe horizontally; reclaims significant vertical space. */
+  .gpu-cats {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .gpu-cats::-webkit-scrollbar { display: none; }
+  .gpu-cats { scrollbar-width: none; }
+  .gpu-cat {
+    flex: 0 0 auto;
+    min-width: 168px;
+    padding: 10px 30px 10px 14px;
+    scroll-snap-align: start;
+  }
   .gpu-cat .gc-label { font-size: 11px; }
   .gpu-cat .gc-sub { font-size: 9px; }
   .gpu-cat .gc-count { top: 10px; right: 10px; font-size: 9px; }
@@ -1441,9 +1521,20 @@ a, button {
   .model-row > .m-pills, .model-row > .m-size { display: none; }
   .model-row .m-name { font-size: 12px; }
 
-  /* Fit table — drop bar, tighten */
-  .fit-table .head, .fit-row { grid-template-columns: 1.4fr 60px 70px 70px; padding: 10px 14px; gap: 8px; }
-  .fit-table .bar-cell { display: none; }
+  /* Fit table on mobile:
+       - drop the params column (model name already says "70B" etc.)
+       - keep the weight-in-GB number visible (hide just the bar viz)
+       - tighten header font so labels don't wrap to 3 lines
+       - 4 cols: Model · Quant · Weight · Fit
+   */
+  .fit-table .head, .fit-row { grid-template-columns: 1.4fr 76px 60px 64px; padding: 10px 14px; gap: 8px; }
+  .fit-table .head { font-size: 9px; padding: 8px 14px; line-height: 1.2; }
+  .fit-table .head > * { white-space: normal; overflow: hidden; }
+  .fit-table .head span:nth-child(2),
+  .fit-row > .params { display: none; }
+  .fit-table .bar-cell { display: flex; justify-content: flex-end; padding: 0; gap: 0; }
+  .fit-table .bar-cell .mini-bar { display: none; }
+  .fit-table .bar-cell .mini-pct { width: auto; }
   .fit-row .name { font-size: 12px; }
 
   /* Compare cards full width */
