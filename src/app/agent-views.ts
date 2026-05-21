@@ -8,6 +8,7 @@
  */
 import { registerHomeView } from './_views/home';
 import { registerMathView } from './_views/math';
+import { registerCalcView } from './_views/calc';
 import { registerGpuIndexView } from './_views/gpu-index';
 import { registerModelIndexView } from './_views/model-index';
 import { registerRuntimeIndexView } from './_views/runtime-index';
@@ -17,6 +18,7 @@ import { registerAllRuntimeViews } from './_views/all-runtimes';
 
 registerHomeView();
 registerMathView();
+registerCalcView();
 registerGpuIndexView();
 registerModelIndexView();
 registerRuntimeIndexView();

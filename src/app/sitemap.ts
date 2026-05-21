@@ -27,6 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${BASE_URL}/calc/`,
+      lastModified,
+      changeFrequency,
+      priority: 0.95,
+    },
+    {
       url: `${BASE_URL}/gpu/`,
       lastModified,
       changeFrequency,

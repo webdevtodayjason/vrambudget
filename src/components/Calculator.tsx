@@ -4,7 +4,7 @@
 // Ported from docs/handoff/project/calculator.jsx (reference only, do not import).
 // All math + data comes from src/lib/*.
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 
 import {
@@ -34,6 +34,11 @@ import {
   fmtDownloads,
   type HFSearchResult,
 } from "@/lib/hf";
+import {
+  buildCalcQuery,
+  readCalcUrl,
+  type CalcTab,
+} from "@/lib/calc-url";
 
 // ────────────────────────────────────────────────────────────────────────────
 // public surface
@@ -50,7 +55,7 @@ export interface CalculatorProps {
   initialSafety?: number;
 }
 
-type Tab = "curated" | "search" | "size";
+type Tab = CalcTab;
 
 const FIT_ORDER: Record<FitClass, number> = { fits: 0, tight: 1, over: 2 };
 const FIT_GROUPS: FitClass[] = ["fits", "tight", "over"];
@@ -82,11 +87,90 @@ export default function Calculator({
   const [safety, setSafety] = useState<number>(initialSafety);
   const [tab, setTab] = useState<Tab>("curated");
   const [category, setCategory] = useState<GpuCategory>(initialGpuObj.category);
+  const [hydrated, setHydrated] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
+  const vramTouchedRef = useRef<boolean>(false);
+
+  // Hydrate from URL on first client render. Static export means searchParams
+  // isn't available SSR, so we read `window.location.search` directly post-mount.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const parsed = readCalcUrl(window.location.search);
+    if (parsed.gpuSlug) {
+      const next = gpuBySlug(parsed.gpuSlug);
+      if (next) {
+        setGpu(next);
+        setCategory(next.category);
+        if (parsed.vramOverride !== undefined) {
+          setVram(parsed.vramOverride);
+          vramTouchedRef.current = true;
+        } else {
+          setVram(next.vramGB);
+        }
+      }
+    } else if (parsed.vramOverride !== undefined) {
+      setVram(parsed.vramOverride);
+      vramTouchedRef.current = true;
+    }
+    if (parsed.context !== undefined) setContext(parsed.context);
+    if (parsed.concurrency !== undefined) setConcurrency(parsed.concurrency);
+    if (parsed.safety !== undefined) setSafety(parsed.safety);
+    if (parsed.tab !== undefined) setTab(parsed.tab);
+    setHydrated(true);
+  }, []);
 
   // when GPU selection changes, snap VRAM slider to the GPU's stock VRAM
+  // (unless the user explicitly overrode it via URL or slider).
   useEffect(() => {
-    setVram(gpu.vramGB);
+    if (!vramTouchedRef.current) {
+      setVram(gpu.vramGB);
+    }
   }, [gpu.slug, gpu.vramGB]);
+
+  // Sync state to URL after hydration. Uses history.replaceState (no Next.js
+  // navigation) so the URL updates without re-rendering the page.
+  useEffect(() => {
+    if (!hydrated) return;
+    if (typeof window === "undefined") return;
+    const query = buildCalcQuery(
+      {
+        gpuSlug: gpu.slug,
+        vramOverride: vramTouchedRef.current ? vram : undefined,
+        context,
+        concurrency,
+        safety,
+        tab,
+      },
+      gpu.vramGB,
+    );
+    const nextUrl = `${window.location.pathname}${query}${window.location.hash}`;
+    if (nextUrl !== `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+      window.history.replaceState(null, "", nextUrl);
+    }
+  }, [hydrated, gpu.slug, gpu.vramGB, vram, context, concurrency, safety, tab]);
+
+  // Wrapped slider setters that mark VRAM as user-touched.
+  const setVramTouched = (v: number) => {
+    vramTouchedRef.current = true;
+    setVram(v);
+  };
+  const setGpuAndResetVram = (next: GPU) => {
+    vramTouchedRef.current = false;
+    setGpu(next);
+  };
+
+  // Share button: copy current URL to clipboard.
+  async function handleShare() {
+    if (typeof window === "undefined") return;
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      // Clipboard API can fail in non-secure contexts; fall back to no-op.
+      // Users on http://localhost in some browsers will hit this.
+    }
+  }
 
   const budget: Budget = useMemo(
     () =>
@@ -108,9 +192,30 @@ export default function Calculator({
         <span>
           {`$ vrambudget --gpu ${gpu.slug} --ctx ${context} --conc ${concurrency} --safety ${safety}%`}
         </span>
-        <span className="dot-row">
-          <span className="dot live" />
-          <span>live</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <button
+            type="button"
+            onClick={handleShare}
+            aria-label="Copy shareable URL of this calculator state"
+            style={{
+              background: "transparent",
+              border: `1px solid ${copied ? "var(--accent)" : "var(--line-strong)"}`,
+              color: copied ? "var(--accent)" : "var(--text)",
+              fontFamily: "var(--mono)",
+              fontSize: 11,
+              padding: "5px 10px",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              cursor: "pointer",
+              transition: "color 80ms linear, border-color 80ms linear",
+            }}
+          >
+            {copied ? "✓ copied" : "↗ copy link"}
+          </button>
+          <span className="dot-row">
+            <span className="dot live" />
+            <span>live</span>
+          </span>
         </span>
       </div>
 
@@ -118,7 +223,7 @@ export default function Calculator({
         category={category}
         onCategoryChange={setCategory}
         selectedSlug={gpu.slug}
-        onSelect={setGpu}
+        onSelect={setGpuAndResetVram}
       />
 
       <div className="calc-body">
@@ -130,7 +235,7 @@ export default function Calculator({
             max={192}
             step={1}
             unit="GB"
-            onChange={setVram}
+            onChange={setVramTouched}
           />
           <SliderRow
             label="System RAM"

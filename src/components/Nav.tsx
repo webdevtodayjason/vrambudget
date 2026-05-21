@@ -20,7 +20,7 @@ export default function Nav({ active = null }: NavProps) {
           <span className="brand-sub">v0.3.1</span>
         </Link>
         <div className="nav-links">
-          <Link href="/#calculator" className={cls('calculator')}>
+          <Link href="/calc/" className={cls('calculator')}>
             Calculator
           </Link>
           <Link href="/the-math" className={cls('math')}>
