@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
   },
   twitter: { card: 'summary_large_image' },
-  icons: { icon: '/favicon.ico' },
+  // Icons auto-resolved from app/icon.svg and app/apple-icon.tsx (Next 15 file-based metadata).
 };
 
 export const viewport: Viewport = {

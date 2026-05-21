@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges" role="img" aria-label="vrambudget logo">
+  <rect width="32" height="32" fill="#0A0A0A"/>
+  <rect x="3" y="13" width="18" height="6" fill="#FFA947"/>
+  <rect x="21" y="13" width="5" height="6" fill="rgba(255,169,71,0.55)"/>
+  <rect x="26" y="13" width="2" height="6" fill="rgba(255,169,71,0.28)"/>
+  <rect x="28" y="13" width="1" height="6" fill="rgba(255,255,255,0.08)"/>
+</svg>

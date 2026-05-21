@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64" role="img" aria-label="vrambudget wordmark">
+  <rect width="320" height="64" fill="#0A0A0A"/>
+  <!-- mini budget-bar mark -->
+  <g transform="translate(16,29)">
+    <rect width="36" height="12" fill="#FFA947"/>
+    <rect x="36" width="10" height="12" fill="rgba(255,169,71,0.55)"/>
+    <rect x="46" width="4" height="12" fill="rgba(255,169,71,0.28)"/>
+    <rect x="50" width="2" height="12" fill="rgba(255,255,255,0.08)"/>
+  </g>
+  <!-- wordmark -->
+  <text x="84" y="41"
+        font-family="JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
+        font-size="28" font-weight="600"
+        letter-spacing="-0.5"
+        fill="#E8E6E1">vrambudget</text>
+</svg>
