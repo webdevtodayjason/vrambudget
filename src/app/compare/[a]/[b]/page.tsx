@@ -467,6 +467,7 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
             {shownRows.map((r) => (
               <div key={r.modelSlug} style={{ display: 'contents' }}>
                 <div
+                  className="cmp-cell-model"
                   style={{
                     padding: '12px 18px',
                     borderBottom: '1px solid var(--line)',
@@ -478,12 +479,13 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
                     style={{ color: 'var(--text)', textDecoration: 'none' }}
                   >
                     {r.modelName}
-                    <span style={{ color: 'var(--text-dim)', marginLeft: 8 }}>
+                    <span className="cmp-params" style={{ color: 'var(--text-dim)', marginLeft: 8 }}>
                       {r.params}B
                     </span>
                   </Link>
                 </div>
                 <div
+                  className="cmp-cell-value"
                   style={{
                     padding: '12px 18px',
                     borderBottom: '1px solid var(--line)',
@@ -492,11 +494,12 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
                   }}
                 >
                   <span className={`pill ${r.fitA}`}>{r.fitA}</span>
-                  <span style={{ marginLeft: 8, color: 'var(--text-dim)' }}>
+                  <span className="cmp-quant" style={{ marginLeft: 8, color: 'var(--text-dim)' }}>
                     {r.bestQuantA.toUpperCase()}
                   </span>
                 </div>
                 <div
+                  className="cmp-cell-value"
                   style={{
                     padding: '12px 18px',
                     borderBottom: '1px solid var(--line)',
@@ -505,7 +508,7 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
                   }}
                 >
                   <span className={`pill ${r.fitB}`}>{r.fitB}</span>
-                  <span style={{ marginLeft: 8, color: 'var(--text-dim)' }}>
+                  <span className="cmp-quant" style={{ marginLeft: 8, color: 'var(--text-dim)' }}>
                     {r.bestQuantB.toUpperCase()}
                   </span>
                 </div>

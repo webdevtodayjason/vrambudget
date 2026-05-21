@@ -1255,6 +1255,34 @@ footer {
 
 /* ── mobile-first responsive overrides ────────────────────────────── */
 
+/* ── iOS Safari + cross-browser hardening ─────────────────────────── */
+
+/* backdrop-filter vendor prefix for older Safari */
+.nav {
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Suppress iOS tap highlight; use our own accent-soft on hover/active. */
+a, button {
+  -webkit-tap-highlight-color: rgba(255, 169, 71, 0.10);
+}
+
+/* Safe-area insets for iPhone notch / home-indicator. */
+@supports (padding: env(safe-area-inset-top)) {
+  .nav-inner {
+    padding-left: max(32px, env(safe-area-inset-left));
+    padding-right: max(32px, env(safe-area-inset-right));
+  }
+  footer .container,
+  .article {
+    padding-left: max(32px, env(safe-area-inset-left));
+    padding-right: max(32px, env(safe-area-inset-right));
+  }
+  .mobile-menu-drawer {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 /* Hamburger styles (visible only on mobile via the media query below). */
 .mobile-menu-toggle {
   display: none;
@@ -1267,6 +1295,7 @@ footer {
   gap: 4px;
   width: 36px;
   height: 32px;
+  -webkit-tap-highlight-color: transparent;
 }
 .mobile-menu-bar {
   display: block;
@@ -1281,18 +1310,23 @@ footer {
 .mobile-menu-drawer {
   /* Use absolute positioning relative to the nav element. The nav has
      backdrop-filter which creates a containing block, so position:fixed
-     would collapse height. Absolute + explicit height works either way. */
+     would collapse height. Absolute + explicit height works either way.
+     dvh handles iOS Safari's collapsing/expanding address bar — 100vh
+     there includes the address-bar area, which causes content to be
+     hidden behind the chrome. */
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
   height: calc(100vh - 56px);
+  height: calc(100dvh - 56px);
   background: var(--bg);
   z-index: 100;
   display: flex;
   flex-direction: column;
   border-top: 1px solid var(--line);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .mobile-menu-drawer a {
   display: block;
@@ -1364,8 +1398,6 @@ footer {
   .section-head .right { font-size: 10px; }
 
   /* Calculator: stack everything */
-  .calc-header { padding: 12px 14px; flex-wrap: wrap; gap: 10px; font-size: 11px; }
-  .calc-header > span:first-child { word-break: break-all; flex: 1 1 100%; }
   .calc-body { grid-template-columns: 1fr; }
   .sliders { padding: 16px; border-right: 0; border-bottom: 1px solid var(--line); gap: 14px; }
   .slider-row { grid-template-columns: 100px 1fr 64px; gap: 10px; }
@@ -1393,10 +1425,16 @@ footer {
   .bar-legend { gap: 12px; font-size: 10px; }
   .budget-bar { padding: 14px 16px; }
 
-  /* Tabs — keep horizontal scroll if needed */
-  .tab { padding: 12px 16px; font-size: 11px; }
+  /* Tabs — wrap onto multiple rows so they don't overflow */
   .tab-bar { flex-wrap: wrap; }
   .tab-bar .search-mini { display: none; }
+  .tabs { flex-wrap: wrap; width: 100%; }
+  .tab { flex: 1 1 auto; padding: 12px 14px; font-size: 11px; min-width: 0; }
+  .tab .count { display: none; }
+
+  /* Calc header: hide the long cmd line on mobile (keep share buttons) */
+  .calc-header { padding: 10px 14px; font-size: 11px; gap: 12px; }
+  .calc-header > span:first-child { display: none; }
 
   /* Model list */
   .model-row { grid-template-columns: 1fr 80px; gap: 8px; padding: 12px 16px; }
@@ -1423,7 +1461,8 @@ footer {
 
   /* Search pane */
   .search-pane, .size-pane { padding: 18px; }
-  .search-row input { padding: 12px 14px; }
+  /* font-size 16px+ prevents iOS Safari auto-zoom on input focus */
+  .search-row input { padding: 12px 14px; font-size: 16px; }
 
   /* Article: tighter */
   .article { padding: 56px 18px 80px; max-width: 100%; }
@@ -1453,18 +1492,36 @@ footer {
 /* Compare page tables — mobile overrides */
 @media (max-width: 720px) {
   .compare-spec-diff { grid-template-columns: 1.4fr 1fr 1fr 50px !important; font-size: 11px; }
-  .compare-spec-diff > * { padding: 10px 12px !important; }
+  .compare-spec-diff > * { padding: 10px 12px !important; min-width: 0; overflow: hidden; }
   .compare-summary { grid-template-columns: 1fr !important; }
   .compare-summary > * { border-right: 0 !important; border-bottom: 1px solid var(--line) !important; }
   .compare-summary > *:last-child { border-bottom: 0 !important; }
-  .compare-fit-delta { grid-template-columns: 1.2fr 0.9fr 0.9fr !important; font-size: 11px; }
-  .compare-fit-delta > * { padding: 10px 12px !important; }
+  /* Aggressive: 1fr for model name; fixed 80px cells for fit pills.
+     min-width: 0 forces grid items to shrink below their content width.
+     Stack the pill + quant text vertically in value cells so we don't
+     have to fit "FITS Q5_K_M" on a single line. */
+  .compare-fit-delta { grid-template-columns: 1fr 80px 80px !important; font-size: 11px; }
+  .compare-fit-delta > * { padding: 8px 10px !important; min-width: 0; }
+  .compare-fit-delta .cmp-cell-value {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .compare-fit-delta .cmp-cell-value .cmp-quant {
+    margin-left: 0 !important;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  .compare-fit-delta .pill { font-size: 9px; padding: 2px 5px; }
+  .compare-fit-delta .cmp-cell-model { overflow-wrap: anywhere; }
 }
 
 @media (max-width: 480px) {
   .compare-spec-diff { grid-template-columns: 1fr 1fr 1fr !important; font-size: 11px; }
   .compare-spec-diff > *:nth-child(4n) { display: none !important; } /* hide Δ column */
-  .compare-fit-delta { grid-template-columns: 1fr 0.8fr 0.8fr !important; }
+  .compare-fit-delta { grid-template-columns: 1fr 68px 68px !important; }
+  .compare-fit-delta .cmp-params { display: none; } /* free room for the model name */
 }
 
 @media (max-width: 480px) {
