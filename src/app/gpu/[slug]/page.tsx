@@ -25,10 +25,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const gpu = gpuBySlug(slug);
   if (!gpu) {
-    return { title: 'Not found · vrambudget' };
+    return { title: { absolute: 'Not found · vrambudget' } };
   }
   return {
-    title: `${gpu.name} · ${gpu.vramGB}GB — vrambudget`,
+    title: { absolute: `${gpu.name} · ${gpu.vramGB}GB — vrambudget` },
     description: gpu.summary,
     alternates: {
       types: {

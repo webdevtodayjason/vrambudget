@@ -4,7 +4,7 @@ const AVL_BADGE_SVG =
   'https://raw.githubusercontent.com/frontier-infra/avl/main/assets/avl-badge.svg';
 
 export default function AvlBadge({ route }: AvlBadgeProps) {
-  const endpoint = `${route}.agent`;
+  const endpoint = route === '/' ? '/index.agent' : `${route}.agent`;
   const alt = `AVL agent-ready: this page ships a parallel agent view at ${endpoint}`;
 
   return (

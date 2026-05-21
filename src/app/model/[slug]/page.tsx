@@ -32,10 +32,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const m = modelBySlug(slug);
   if (!m) {
-    return { title: 'not found · vrambudget' };
+    return { title: { absolute: 'not found · vrambudget' } };
   }
   return {
-    title: `${m.name} · ${m.params}B params — vrambudget`,
+    title: { absolute: `${m.name} · ${m.params}B params — vrambudget` },
     description: m.summary,
     alternates: {
       types: { 'text/agent-view': `/model/${m.slug}.agent` },

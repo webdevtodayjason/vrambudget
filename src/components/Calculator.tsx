@@ -82,19 +82,11 @@ export default function Calculator({
   const [safety, setSafety] = useState<number>(initialSafety);
   const [tab, setTab] = useState<Tab>("curated");
   const [category, setCategory] = useState<GpuCategory>(initialGpuObj.category);
-  const [onGpuPage, setOnGpuPage] = useState<boolean>(false);
 
   // when GPU selection changes, snap VRAM slider to the GPU's stock VRAM
   useEffect(() => {
     setVram(gpu.vramGB);
   }, [gpu.slug, gpu.vramGB]);
-
-  // detect detail-page context so the card "↗" link stays relative
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setOnGpuPage(window.location.pathname.startsWith("/gpu/"));
-    }
-  }, []);
 
   const budget: Budget = useMemo(
     () =>
@@ -127,7 +119,6 @@ export default function Calculator({
         onCategoryChange={setCategory}
         selectedSlug={gpu.slug}
         onSelect={setGpu}
-        onGpuPage={onGpuPage}
       />
 
       <div className="calc-body">
@@ -247,7 +238,6 @@ interface GpuGridSectionProps {
   onCategoryChange: (cat: GpuCategory) => void;
   selectedSlug: string;
   onSelect: (gpu: GPU) => void;
-  onGpuPage: boolean;
 }
 
 function GpuGridSection({
@@ -255,7 +245,6 @@ function GpuGridSection({
   onCategoryChange,
   selectedSlug,
   onSelect,
-  onGpuPage,
 }: GpuGridSectionProps) {
   const gpus = GPUS.filter((g) => g.category === category);
 
@@ -284,7 +273,7 @@ function GpuGridSection({
 
       <div className="gpu-grid">
         {gpus.map((g) => {
-          const detailHref = onGpuPage ? `${g.slug}/` : `gpu/${g.slug}/`;
+          const detailHref = `/gpu/${g.slug}/`;
           const isActive = selectedSlug === g.slug;
           return (
             <div
