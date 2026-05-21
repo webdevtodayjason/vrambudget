@@ -1252,3 +1252,252 @@ footer {
   .fit-table .bar-cell { display: none; }
   .foot-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── mobile-first responsive overrides ────────────────────────────── */
+
+/* Hamburger styles (visible only on mobile via the media query below). */
+.mobile-menu-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  padding: 8px 9px;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 36px;
+  height: 32px;
+}
+.mobile-menu-bar {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: var(--text);
+  transition: background 80ms linear;
+}
+.mobile-menu-toggle:hover .mobile-menu-bar { background: var(--accent); }
+.mobile-menu-toggle[aria-expanded="true"] .mobile-menu-bar { background: var(--accent); }
+
+.mobile-menu-drawer {
+  /* Use absolute positioning relative to the nav element. The nav has
+     backdrop-filter which creates a containing block, so position:fixed
+     would collapse height. Absolute + explicit height works either way. */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: calc(100vh - 56px);
+  background: var(--bg);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+  overflow-y: auto;
+}
+.mobile-menu-drawer a {
+  display: block;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+.mobile-menu-drawer a:hover { color: var(--accent); }
+.mobile-menu-drawer a.active { color: var(--accent); background: var(--bg-elev); }
+.mobile-menu-drawer .mobile-menu-cta {
+  margin: 18px 24px;
+  padding: 14px 18px;
+  border: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  text-align: center;
+  background: var(--bg-elev);
+}
+
+@media (max-width: 720px) {
+  .container { padding: 0 18px; max-width: 100%; }
+  .nav-inner { padding: 0 18px; height: 56px; }
+
+  /* Brand: keep short, hide version sub */
+  .brand { font-size: 13px; gap: 8px; }
+  .brand-sub { display: none; }
+  .brand-slash { display: none; }
+
+  /* Desktop nav links hidden; hamburger shown */
+  .nav-links { display: none; }
+  .mobile-menu-toggle { display: inline-flex; }
+
+  /* Body bg grid lines lighter so they don't dominate small screens */
+  body { background-size: calc(100% / 4) 100%; }
+
+  /* Home hero — tighter padding, smaller headline */
+  .hero { padding: 56px 0 48px; }
+  .hero-headline { font-size: clamp(36px, 11vw, 56px); line-height: 1.0; }
+  .hero-formula { font-size: clamp(26px, 8vw, 44px); line-height: 1.0; }
+  .hero-formula.xl { font-size: clamp(32px, 10vw, 56px); }
+  .hero-sub { font-size: 16px; line-height: 1.4; }
+  .hero-meta { gap: 14px 20px; font-size: 11px; line-height: 1.5; }
+
+  /* Detail hero — tighter, smaller, brand logo doesn't fight wrap */
+  .detail-hero { padding: 40px 0 32px; }
+  .detail-hero .crumb { font-size: 11px; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .detail-hero h1 {
+    font-size: clamp(38px, 11vw, 60px);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+  }
+  .detail-hero h1 .accent { display: inline; }
+  .detail-hero .summary { font-size: 16px; line-height: 1.4; margin-bottom: 24px; }
+
+  /* Detail stats — 2 cols on phone, stacked dividers */
+  .detail-stats { grid-template-columns: repeat(2, 1fr); }
+  .detail-stat { padding: 16px 18px; }
+  .detail-stat:nth-child(2) { border-right: 0; }
+  .detail-stat:nth-child(3), .detail-stat:nth-child(4) { border-top: 1px solid var(--line); }
+  .detail-stat:last-child { border-right: 0; }
+  .detail-stat .v { font-size: 18px; }
+
+  /* Section heads — stack right text under h2 */
+  .section-head { flex-direction: column; align-items: flex-start; gap: 6px; padding: 24px 0 16px; }
+  .section-head h2 { font-size: clamp(22px, 6vw, 32px); }
+  .section-head .right { font-size: 10px; }
+
+  /* Calculator: stack everything */
+  .calc-header { padding: 12px 14px; flex-wrap: wrap; gap: 10px; font-size: 11px; }
+  .calc-header > span:first-child { word-break: break-all; flex: 1 1 100%; }
+  .calc-body { grid-template-columns: 1fr; }
+  .sliders { padding: 16px; border-right: 0; border-bottom: 1px solid var(--line); gap: 14px; }
+  .slider-row { grid-template-columns: 100px 1fr 64px; gap: 10px; }
+  .slider-row label { font-size: 11px; }
+  .slider-row .val { font-size: 12px; }
+  .tiles { grid-template-columns: 1fr 1fr; }
+  .tile { padding: 14px 16px; }
+  .tile .num { font-size: 22px; }
+  .tile:nth-child(2n) { border-right: 0; }
+
+  /* GPU category strip — wrap, smaller padding */
+  .gpu-cat { flex: 1 1 140px; padding: 10px 12px; }
+  .gpu-cat .gc-label { font-size: 11px; }
+  .gpu-cat .gc-sub { font-size: 9px; }
+  .gpu-cat .gc-count { top: 10px; right: 10px; font-size: 9px; }
+
+  /* GPU card grid — 2 cols on phone */
+  .gpu-grid { grid-template-columns: repeat(2, 1fr); }
+  .gpu-card { padding: 12px; }
+  .gpu-card:nth-child(2n) { border-right: 0 !important; }
+  .gpu-card:nth-child(3n) { border-right: 1px solid var(--line) !important; }
+  .gpu-card .vram { font-size: 18px; }
+
+  /* Bar legend wraps */
+  .bar-legend { gap: 12px; font-size: 10px; }
+  .budget-bar { padding: 14px 16px; }
+
+  /* Tabs — keep horizontal scroll if needed */
+  .tab { padding: 12px 16px; font-size: 11px; }
+  .tab-bar { flex-wrap: wrap; }
+  .tab-bar .search-mini { display: none; }
+
+  /* Model list */
+  .model-row { grid-template-columns: 1fr 80px; gap: 8px; padding: 12px 16px; }
+  .model-row > .m-pills, .model-row > .m-size { display: none; }
+  .model-row .m-name { font-size: 12px; }
+
+  /* Fit table — drop bar, tighten */
+  .fit-table .head, .fit-row { grid-template-columns: 1.4fr 60px 70px 70px; padding: 10px 14px; gap: 8px; }
+  .fit-table .bar-cell { display: none; }
+  .fit-row .name { font-size: 12px; }
+
+  /* Compare cards full width */
+  .compare, .gpu-recs { grid-template-columns: 1fr; }
+  .compare-card, .rec-col { border-right: 0; border-bottom: 1px solid var(--line); }
+  .rec-col .head { padding: 12px 14px; }
+  .rec-col .gpu-pick { padding: 10px 14px; }
+
+  /* Size grid */
+  .size-grid { grid-template-columns: repeat(2, 1fr); }
+  .size-cell { padding: 14px 16px; }
+  .size-cell:nth-child(3n) { border-right: 1px solid var(--line); }
+  .size-cell:nth-child(2n) { border-right: 0; }
+  .size-controls { grid-template-columns: 80px 1fr 70px; }
+
+  /* Search pane */
+  .search-pane, .size-pane { padding: 18px; }
+  .search-row input { padding: 12px 14px; }
+
+  /* Article: tighter */
+  .article { padding: 56px 18px 80px; max-width: 100%; }
+  .article h1 { font-size: clamp(30px, 9vw, 48px); line-height: 1.05; }
+  .article .lede { font-size: 17px; line-height: 1.5; margin-bottom: 32px; }
+  .article p { font-size: 16px; line-height: 1.65; }
+  .article h2 { font-size: 13px; margin: 48px 0 14px; }
+  .article .callout { padding: 14px 18px; }
+  .article .callout .formula { font-size: 16px; line-height: 1.5; }
+  .article .tax-box { padding: 20px; margin: 32px 0; }
+  .article .tax-box .big { font-size: 22px; }
+  .article .tax-box ul li .pct { width: auto; margin-right: 6px; }
+
+  /* Footer */
+  .foot-grid { grid-template-columns: 1fr; gap: 24px; }
+  .foot-bottom { flex-direction: column; align-items: flex-start; gap: 10px; padding-top: 18px; margin-top: 32px; }
+
+  /* Math cols */
+  .math-cols { grid-template-columns: 1fr; }
+  .math-col { padding: 24px 18px 28px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .math-col:last-child { border-bottom: 0; }
+
+  /* Why grid */
+  .why { padding: 48px 0; gap: 16px; }
+}
+
+/* Compare page tables — mobile overrides */
+@media (max-width: 720px) {
+  .compare-spec-diff { grid-template-columns: 1.4fr 1fr 1fr 50px !important; font-size: 11px; }
+  .compare-spec-diff > * { padding: 10px 12px !important; }
+  .compare-summary { grid-template-columns: 1fr !important; }
+  .compare-summary > * { border-right: 0 !important; border-bottom: 1px solid var(--line) !important; }
+  .compare-summary > *:last-child { border-bottom: 0 !important; }
+  .compare-fit-delta { grid-template-columns: 1.2fr 0.9fr 0.9fr !important; font-size: 11px; }
+  .compare-fit-delta > * { padding: 10px 12px !important; }
+}
+
+@media (max-width: 480px) {
+  .compare-spec-diff { grid-template-columns: 1fr 1fr 1fr !important; font-size: 11px; }
+  .compare-spec-diff > *:nth-child(4n) { display: none !important; } /* hide Δ column */
+  .compare-fit-delta { grid-template-columns: 1fr 0.8fr 0.8fr !important; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 14px; }
+  .nav-inner { padding: 0 14px; height: 52px; }
+
+  /* Hero even tighter */
+  .hero { padding: 40px 0 36px; }
+
+  /* Detail hero stats stack to 1 col */
+  .detail-stats { grid-template-columns: 1fr; }
+  .detail-stat { padding: 14px 16px; border-right: 0 !important; }
+  .detail-stat:not(:last-child) { border-bottom: 1px solid var(--line); }
+  .detail-stat:nth-child(3), .detail-stat:nth-child(4) { border-top: 0; }
+
+  /* GPU card grid 1 col */
+  .gpu-grid { grid-template-columns: 1fr; }
+  .gpu-card { border-right: 0 !important; }
+
+  /* Calc tiles 1 col */
+  .tiles { grid-template-columns: 1fr; }
+  .tile { border-right: 0 !important; }
+
+  /* Fit table — drop quant + params display */
+  .fit-table .head, .fit-row { grid-template-columns: 1fr 60px 60px; padding: 10px 12px; }
+  .fit-table .head span:nth-child(2),
+  .fit-row > *:nth-child(2) { display: none; }
+
+  /* Size grid 1 col */
+  .size-grid { grid-template-columns: 1fr; }
+  .size-cell { border-right: 0 !important; }
+
+  /* Article tighter */
+  .article { padding: 40px 16px 60px; }
+}
+

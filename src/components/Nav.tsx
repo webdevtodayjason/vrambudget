@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import MobileMenu from './MobileMenu';
+
 type NavActive = 'calculator' | 'math' | 'glossary' | 'learn' | 'gpus' | 'models' | 'runtimes' | null;
 
 export type NavProps = { active?: NavActive };
@@ -50,6 +52,7 @@ export default function Nav({ active = null }: NavProps) {
             ↗ GitHub
           </a>
         </div>
+        <MobileMenu />
       </div>
     </nav>
   );

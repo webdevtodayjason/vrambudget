@@ -171,6 +171,7 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
             <div className="right">{`$ diff specs ${ga.slug} ${gb.slug}`}</div>
           </div>
           <div
+            className="compare-spec-diff"
             style={{
               display: 'grid',
               gridTemplateColumns: '1fr 90px 1fr 120px',
@@ -303,6 +304,7 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
             <div className="right">$ models that change with the card</div>
           </div>
           <div
+            className="compare-summary"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
@@ -415,6 +417,7 @@ export default async function ComparePage({ params }: { params: Promise<Params> 
           </p>
 
           <div
+            className="compare-fit-delta"
             style={{
               border: '1px solid var(--line)',
               fontFamily: 'var(--mono)',
